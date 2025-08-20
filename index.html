@@ -812,6 +812,14 @@
                     </div>
                     <div class="card-content" id="recommendations"></div>
                 </div>
+                
+                <div class="analysis-card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span class="card-icon">📊</span>
+                        Detailed Analysis Explanation
+                    </div>
+                    <div class="card-content" id="detailedExplanation" style="text-align: left; line-height: 1.8;"></div>
+                </div>
             </div>
             
             <div class="action-buttons">
@@ -1172,6 +1180,66 @@
                 emotionalIndicators.push(["Neutral emotional state", "Stable affect presentation", "Consistent tone maintained"][emotionalIndicators.length]);
             }
             
+            // Generate detailed explanation
+            let detailedExplanation = [];
+            
+            // Opening summary
+            if (riskScore < 20) {
+                detailedExplanation.push(`<strong>Analysis Summary:</strong> This statement appears largely genuine with minimal deception indicators.`);
+            } else if (riskScore < 40) {
+                detailedExplanation.push(`<strong>Analysis Summary:</strong> This statement shows some linguistic patterns worth noting, though not necessarily deceptive.`);
+            } else if (riskScore < 60) {
+                detailedExplanation.push(`<strong>Analysis Summary:</strong> Multiple concerning patterns detected that warrant closer examination.`);
+            } else {
+                detailedExplanation.push(`<strong>Analysis Summary:</strong> Significant deception indicators present throughout this statement.`);
+            }
+            
+            // Explain what was found
+            detailedExplanation.push(`<strong>What I Found:</strong>`);
+            
+            let findingsList = [];
+            if (indicators.overemphasis.found.length > 0) {
+                findingsList.push(`• <em>Trust-building phrases</em> (${indicators.overemphasis.found.length}x): When people say "${indicators.overemphasis.found[0]}" unprompted, it often signals they're trying too hard to be believed.`);
+            }
+            if (indicators.hedging.found.length >= indicators.hedging.threshold) {
+                findingsList.push(`• <em>Hedging language</em> (${indicators.hedging.found.length}x): Words like "${indicators.hedging.found[0]}" create distance from claims, suggesting uncertainty or reluctance to commit.`);
+            }
+            if (indicators.memoryIssues.found.length > 0) {
+                findingsList.push(`• <em>Memory issues</em>: Phrases like "${indicators.memoryIssues.found[0]}" can indicate fabrication or selective recall.`);
+            }
+            if (indicators.distancing.found.length > 0) {
+                findingsList.push(`• <em>Distancing language</em>: Using "${indicators.distancing.found[0]}" instead of direct references suggests psychological distancing from the subject.`);
+            }
+            if (indicators.vagueness.found.length >= indicators.vagueness.threshold) {
+                findingsList.push(`• <em>Vague terminology</em> (${indicators.vagueness.found.length}x): Non-specific words like "${indicators.vagueness.found[0]}" avoid providing concrete details.`);
+            }
+            if (indicators.strongClaims.found.length >= indicators.strongClaims.threshold) {
+                findingsList.push(`• <em>Overconfident language</em> (${indicators.strongClaims.found.length}x): Excessive use of absolutes like "${indicators.strongClaims.found[0]}" can compensate for uncertainty.`);
+            }
+            if (indicators.cognitive.found.length >= indicators.cognitive.threshold) {
+                findingsList.push(`• <em>Cognitive processing</em> (${indicators.cognitive.found.length}x): Multiple instances of "${indicators.cognitive.found[0]}" suggest active story construction.`);
+            }
+            
+            if (findingsList.length === 0) {
+                findingsList.push(`• No significant deception patterns detected in the language used.`);
+            }
+            
+            detailedExplanation.push(findingsList.join('\n'));
+            
+            // Explain the scoring
+            detailedExplanation.push(`<strong>How I Calculated the ${riskScore}% Risk Score:</strong>`);
+            detailedExplanation.push(`• Found ${significantIndicators} significant indicator${significantIndicators !== 1 ? 's' : ''} across ${wordCount} words`);
+            detailedExplanation.push(`• Base score of ${totalScore.toFixed(1)} points from weighted patterns`);
+            detailedExplanation.push(`• Scaled to ${riskScore}% using progressive risk tiers`);
+            
+            // Context matters section
+            detailedExplanation.push(`<strong>Important Context:</strong>`);
+            detailedExplanation.push(`Remember that these patterns can appear in truthful statements too. Consider:`);
+            detailedExplanation.push(`• The speaker's normal communication style`);
+            detailedExplanation.push(`• The stakes involved in this situation`);
+            detailedExplanation.push(`• Whether the person is naturally anxious or uncertain`);
+            detailedExplanation.push(`• Cultural and individual differences in expression`);
+            
             return {
                 riskScore,
                 riskLevel,
@@ -1180,9 +1248,11 @@
                 linguisticPatterns: linguisticPatterns.slice(0, 4),
                 emotionalIndicators: emotionalIndicators.slice(0, 4),
                 recommendations: recommendations,
+                detailedExplanation: detailedExplanation.join('\n\n'),
                 metadata: {
                     wordCount,
                     indicatorCount: significantIndicators,
+                    totalScore: totalScore,
                     analysisVersion: "2.0"
                 }
             };
@@ -1342,6 +1412,15 @@
                 recommendationsList.appendChild(ul);
             }
             
+            // Display detailed explanation
+            const explanationDiv = document.getElementById('detailedExplanation');
+            if (data.detailedExplanation) {
+                setTimeout(() => {
+                    explanationDiv.innerHTML = data.detailedExplanation;
+                    explanationDiv.style.animation = 'fadeIn 0.8s';
+                }, 2000);
+            }
+            
             showResults();
         }
         
@@ -1377,6 +1456,8 @@
         function clearInput() {
             document.getElementById('statementInput').value = '';
             charCount.textContent = '0';
+            hideResults();  // Also hide the analysis results
+            hideError();
         }
         
         function saveToHistory(silent = false) {
