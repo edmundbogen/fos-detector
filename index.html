@@ -869,63 +869,86 @@
             const words = statementLower.split(/\s+/);
             const sentenceCount = statement.split(/[.!?]+/).filter(s => s.trim()).length;
             
-            // Deception indicator patterns with weights
+            // Deception indicator patterns with recalibrated weights
+            // Based on actual deception research, these patterns need context
             const indicators = {
                 hedging: {
-                    patterns: ['basically', 'sort of', 'kind of', 'maybe', 'perhaps', 'probably', 'possibly', 'roughly', 'approximately', 'essentially', 'practically', 'virtually', 'seemingly', 'apparently', 'supposedly'],
-                    weight: 3,
-                    found: []
+                    patterns: ['sort of', 'kind of', 'maybe', 'perhaps', 'possibly', 'roughly', 'approximately', 'seemingly', 'apparently', 'supposedly'],
+                    weight: 2,  // Reduced from 3 - common in normal speech
+                    found: [],
+                    threshold: 2  // Only flag if multiple instances
                 },
                 qualifiers: {
-                    patterns: ['just', 'only', 'simply', 'merely', 'hardly', 'barely', 'quite', 'rather', 'somewhat', 'slightly', 'a bit', 'a little'],
-                    weight: 2,
-                    found: []
+                    patterns: ['just', 'only', 'simply', 'merely'],
+                    weight: 0.5,  // Heavily reduced from 2 - very common words
+                    found: [],
+                    threshold: 4  // Need many to be suspicious
                 },
                 overemphasis: {
-                    patterns: ['honestly', 'frankly', 'to be honest', 'to tell the truth', 'believe me', 'trust me', 'i swear', 'swear to god', 'definitely', 'absolutely', 'certainly', 'obviously', 'clearly', 'undoubtedly', '100%', 'totally', 'completely'],
-                    weight: 4,
-                    found: []
+                    patterns: ['to be honest', 'to tell the truth', 'believe me', 'trust me', 'i swear', 'swear to god', 'honestly', 'frankly'],
+                    weight: 5,  // Increased from 4 - these are red flags
+                    found: [],
+                    threshold: 1  // Even one is suspicious
+                },
+                strongClaims: {
+                    patterns: ['definitely', 'absolutely', 'certainly', 'obviously', 'clearly', 'undoubtedly', '100%', 'totally', 'completely'],
+                    weight: 1,  // Separated from overemphasis, lower weight
+                    found: [],
+                    threshold: 3
                 },
                 distancing: {
-                    patterns: ['that person', 'that woman', 'that man', 'the person', 'one might', 'one would', 'someone', 'people say', 'they say', 'it is said'],
-                    weight: 3,
-                    found: []
+                    patterns: ['that person', 'that woman', 'that man', 'the person', 'one might', 'one would'],
+                    weight: 4,  // Increased from 3 - strong indicator
+                    found: [],
+                    threshold: 1
                 },
                 tenseShift: {
-                    patterns: ['was ', 'were ', 'had ', 'did ', 'been ', 'went '],
-                    weight: 2,
-                    found: []
+                    patterns: ['was supposed to', 'were going to', 'had planned', 'meant to', 'tried to'],
+                    weight: 3,  // More specific patterns
+                    found: [],
+                    threshold: 2
                 },
                 negation: {
-                    patterns: ['not', 'never', 'no', 'nobody', 'nothing', 'nowhere', 'neither', 'nor', 'cannot', "can't", "won't", "didn't", "don't", "doesn't", "wasn't", "weren't", "isn't", "aren't"],
-                    weight: 1,
-                    found: []
+                    patterns: ['not', 'never', "didn't", "don't", "wasn't", "weren't"],
+                    weight: 0.3,  // Heavily reduced from 1 - too common
+                    found: [],
+                    threshold: 5  // Need many negations to matter
                 },
                 cognitive: {
-                    patterns: ['think', 'thought', 'believe', 'remember', 'recall', 'forgot', 'realize', 'understand', 'assume', 'guess', 'imagine', 'wonder', 'consider', 'decide'],
-                    weight: 2,
-                    found: []
+                    patterns: ['think', 'thought', 'believe', 'guess', 'assume', 'suppose'],
+                    weight: 0.8,  // Reduced from 2 - normal in opinions
+                    found: [],
+                    threshold: 3
                 },
-                emotional: {
-                    patterns: ['feel', 'felt', 'angry', 'sad', 'happy', 'upset', 'worried', 'anxious', 'nervous', 'scared', 'afraid', 'concerned', 'frustrated', 'disappointed'],
-                    weight: 1,
-                    found: []
+                memoryIssues: {
+                    patterns: ['forgot', 'can\'t remember', 'don\'t recall', 'memory is fuzzy', 'not sure if'],
+                    weight: 4,  // New category - memory issues are suspicious
+                    found: [],
+                    threshold: 1
                 },
                 deflection: {
-                    patterns: ['but', 'however', 'although', 'though', 'yet', 'despite', 'regardless', 'nevertheless', 'on the other hand', 'that being said', 'to be fair'],
-                    weight: 3,
-                    found: []
+                    patterns: ['but anyway', 'that being said', 'regardless', 'to be fair', 'on the other hand'],
+                    weight: 2,  // Reduced from 3 - some are conversational
+                    found: [],
+                    threshold: 2
                 },
                 vagueness: {
-                    patterns: ['thing', 'stuff', 'whatever', 'something', 'anything', 'everything', 'somewhere', 'anywhere', 'somehow', 'someone', 'anyone', 'everyone', 'et cetera', 'etc', 'and so on', 'and so forth'],
-                    weight: 3,
-                    found: []
+                    patterns: ['stuff', 'whatever', 'thing', 'something or other', 'whatnot', 'et cetera', 'and so on', 'and so forth'],
+                    weight: 2.5,  // Slightly reduced from 3
+                    found: [],
+                    threshold: 2
+                },
+                minimization: {
+                    patterns: ['only a little', 'not that much', 'barely any', 'hardly', 'just a bit', 'not really'],
+                    weight: 3,  // New category - minimizing behavior
+                    found: [],
+                    threshold: 1
                 }
             };
             
-            // Analyze statement for indicators
+            // Analyze statement for indicators with threshold checking
             let totalScore = 0;
-            let indicatorCount = 0;
+            let significantIndicators = 0;  // Count only significant findings
             let keyIndicators = [];
             
             for (const [key, indicator] of Object.entries(indicators)) {
@@ -934,57 +957,78 @@
                     const matches = statementLower.match(regex);
                     if (matches) {
                         indicator.found.push(...matches);
-                        totalScore += matches.length * indicator.weight;
-                        indicatorCount += matches.length;
                     }
+                }
+                
+                // Only add to score if threshold is met
+                if (indicator.found.length >= indicator.threshold) {
+                    totalScore += indicator.found.length * indicator.weight;
+                    significantIndicators += indicator.found.length;
                 }
             }
             
-            // Build key indicators list
-            if (indicators.overemphasis.found.length > 0) {
-                keyIndicators.push(`Overemphasis detected (${indicators.overemphasis.found.length} instance${indicators.overemphasis.found.length > 1 ? 's' : ''}): "${indicators.overemphasis.found[0]}"`);
+            // Build key indicators list - only for significant findings
+            if (indicators.overemphasis.found.length >= indicators.overemphasis.threshold) {
+                keyIndicators.push(`Trust-building language detected (${indicators.overemphasis.found.length} instance${indicators.overemphasis.found.length > 1 ? 's' : ''}): "${indicators.overemphasis.found[0]}"`);
             }
-            if (indicators.hedging.found.length > 0) {
-                keyIndicators.push(`Hedging language (${indicators.hedging.found.length} instance${indicators.hedging.found.length > 1 ? 's' : ''}): "${indicators.hedging.found[0]}"`);
+            if (indicators.memoryIssues && indicators.memoryIssues.found.length >= indicators.memoryIssues.threshold) {
+                keyIndicators.push(`Memory inconsistencies noted: "${indicators.memoryIssues.found[0]}"`);
             }
-            if (indicators.deflection.found.length > 0) {
-                keyIndicators.push(`Deflection patterns detected: "${indicators.deflection.found[0]}"`);
+            if (indicators.distancing.found.length >= indicators.distancing.threshold) {
+                keyIndicators.push(`Distancing language detected: "${indicators.distancing.found[0]}"`);
             }
-            if (indicators.vagueness.found.length > 0) {
+            if (indicators.hedging.found.length >= indicators.hedging.threshold) {
+                keyIndicators.push(`Excessive hedging (${indicators.hedging.found.length} instances): "${indicators.hedging.found[0]}"`);
+            }
+            if (indicators.vagueness.found.length >= indicators.vagueness.threshold) {
                 keyIndicators.push(`Vague terminology: "${indicators.vagueness.found[0]}"`);
             }
-            if (indicators.distancing.found.length > 0) {
-                keyIndicators.push(`Distancing language detected`);
+            if (indicators.minimization && indicators.minimization.found.length >= indicators.minimization.threshold) {
+                keyIndicators.push(`Minimization patterns: "${indicators.minimization.found[0]}"`);
             }
             
             // Additional analysis factors
             const wordCount = words.length;
             const avgWordLength = words.reduce((sum, word) => sum + word.length, 0) / wordCount;
-            const complexityScore = avgWordLength > 5 ? 10 : 0;
-            const lengthScore = wordCount > 50 ? Math.min(wordCount / 10, 15) : 0;
             
             // Check for specific high-risk patterns
-            const hasContradiction = /but|however|although|though/.test(statementLower) && /didn't|not|never/.test(statementLower);
-            const hasTimeInconsistency = /yesterday|today|tomorrow|last week|next week/.test(statementLower) && indicators.tenseShift.found.length > 2;
-            const excessiveDetail = wordCount > 100 && sentenceCount > 3;
+            const hasContradiction = /but|however|although/.test(statementLower) && 
+                                     /didn't|not|never/.test(statementLower) && 
+                                     indicators.deflection.found.length >= 2;
             
+            const hasTimeInconsistency = /yesterday|today|tomorrow|last week|next week/.test(statementLower) && 
+                                         indicators.tenseShift.found.length >= indicators.tenseShift.threshold;
+            
+            const excessiveDetail = wordCount > 150 && sentenceCount > 5;  // Raised thresholds
+            const tooShort = wordCount < 10;  // Very short responses can be evasive
+            
+            // Context-aware scoring adjustments
             if (hasContradiction) {
-                totalScore += 15;
-                keyIndicators.push("Potential contradiction detected");
+                totalScore += 8;  // Reduced from 15
+                keyIndicators.push("Contradictory statements detected");
             }
             if (hasTimeInconsistency) {
-                totalScore += 10;
-                keyIndicators.push("Time reference inconsistency");
+                totalScore += 6;  // Reduced from 10
+                keyIndicators.push("Timeline inconsistency");
             }
             if (excessiveDetail) {
-                totalScore += 8;
-                keyIndicators.push("Excessive detail (possible overcompensation)");
+                totalScore += 5;  // Reduced from 8
+                keyIndicators.push("Unusually detailed response");
+            }
+            if (tooShort && significantIndicators > 0) {
+                totalScore += 4;
+                keyIndicators.push("Evasive brevity");
             }
             
-            // Calculate final risk score (0-100)
-            totalScore += complexityScore + lengthScore;
-            const rawRiskScore = Math.min(totalScore * 1.5, 95);
-            const riskScore = Math.round(rawRiskScore);
+            // Calculate final risk score with more reasonable scaling
+            // Base score is lower, multiplier is gentler
+            const rawRiskScore = Math.min(totalScore * 2.5, 85);  // Max 85 instead of 95
+            let riskScore = Math.round(rawRiskScore);
+            
+            // Ensure minimum score if no significant indicators
+            if (significantIndicators === 0) {
+                riskScore = Math.min(riskScore, 15);  // Cap at 15% if no real indicators
+            }
             
             // Calculate confidence based on amount of analyzable content
             let confidence;
@@ -999,11 +1043,13 @@
             }
             confidence = Math.round(confidence);
             
-            // Determine risk level
+            // Determine risk level with adjusted thresholds
             let riskLevel;
-            if (riskScore < 25) {
+            if (riskScore < 20) {
+                riskLevel = "Minimal Risk";
+            } else if (riskScore < 40) {
                 riskLevel = "Low Risk";
-            } else if (riskScore < 50) {
+            } else if (riskScore < 60) {
                 riskLevel = "Moderate Risk";
             } else if (riskScore < 75) {
                 riskLevel = "Elevated Risk";
@@ -1046,40 +1092,46 @@
             
             // Generate recommendations based on risk level
             let recommendations = [];
-            if (riskScore < 25) {
+            if (riskScore < 20) {
                 recommendations = [
-                    "Statement appears straightforward with minimal deception indicators",
-                    "Continue normal verification procedures",
-                    "No immediate red flags detected"
+                    "Statement appears genuine with minimal concerns",
+                    "Standard verification is sufficient",
+                    "No significant deception markers detected"
                 ];
-            } else if (riskScore < 50) {
+            } else if (riskScore < 40) {
                 recommendations = [
-                    "Moderate caution advised - some deception markers present",
-                    "Consider asking clarifying questions about specific details",
-                    "Verify key claims through independent sources",
-                    "Pay attention to body language if in person"
+                    "Minor indicators present - likely normal communication",
+                    "Consider context and speaker's typical patterns",
+                    "Ask follow-up questions if anything seems unclear"
+                ];
+            } else if (riskScore < 60) {
+                recommendations = [
+                    "Some deception markers detected - proceed with caution",
+                    "Verify important claims independently",
+                    "Ask specific, detailed follow-up questions",
+                    "Compare with previous statements if available"
                 ];
             } else if (riskScore < 75) {
                 recommendations = [
-                    "Elevated risk detected - multiple deception indicators present",
-                    "Request specific documentation or evidence",
-                    "Cross-reference claims with known facts",
-                    "Consider involving a second opinion",
-                    "Document all interactions for future reference"
+                    "Multiple concerning patterns identified",
+                    "Request documentation or evidence for claims",
+                    "Cross-reference all important information",
+                    "Consider getting a second opinion",
+                    "Document this conversation for future reference"
                 ];
             } else {
                 recommendations = [
-                    "High risk alert - significant deception patterns detected",
-                    "Exercise extreme caution in any decisions",
-                    "Require concrete proof for all claims made",
-                    "Consider professional verification or investigation",
-                    "Protect yourself legally and document everything"
+                    "Significant deception indicators detected",
+                    "Exercise strong caution with this information",
+                    "Require proof for all important claims",
+                    "Consider professional verification if stakes are high",
+                    "Protect your interests and document everything"
                 ];
             }
             
             // Pad arrays if needed
             while (keyIndicators.length < 3) {
-                if (indicatorCount > 5) {
+                if (significantIndicators > 5) {
                     keyIndicators.push("Multiple deception markers present");
                 } else if (wordCount < 20) {
                     keyIndicators.push("Limited content for full analysis");
