@@ -367,33 +367,54 @@
         .risk-elevated { color: #ff9900; text-shadow: 0 0 20px rgba(255, 153, 0, 0.5); }
         .risk-high { color: #ff0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
         
-        .confidence-bar {
-            width: 100%;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
+        .analysis-depth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
-            position: relative;
-            z-index: 1;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .confidence-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00a8e8, #00ff00);
-            transition: width 1s ease;
-            position: relative;
+        .depth-label {
+            color: #00a8e8;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .confidence-fill:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
+        .depth-stars {
+            display: flex;
+            gap: 5px;
+            font-size: 24px;
+        }
+        
+        .star {
+            color: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .star.filled {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: starPulse 0.5s ease;
+        }
+        
+        .depth-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-style: italic;
+            min-width: 100px;
+        }
+        
+        @keyframes starPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         
         @keyframes shimmer {
@@ -740,9 +761,16 @@
             <div class="risk-meter">
                 <div class="risk-score" id="riskScore">0%</div>
                 <div class="risk-level" id="riskLevel">Analyzing...</div>
-                <div>Confidence Level: <span id="confidenceLevel">0%</span></div>
-                <div class="confidence-bar">
-                    <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                <div class="analysis-depth-container">
+                    <span class="depth-label">Analysis Depth:</span>
+                    <span class="depth-stars" id="analysisDepth">
+                        <span class="star" id="star1">☆</span>
+                        <span class="star" id="star2">☆</span>
+                        <span class="star" id="star3">☆</span>
+                        <span class="star" id="star4">☆</span>
+                        <span class="star" id="star5">☆</span>
+                    </span>
+                    <span class="depth-text" id="depthText">Analyzing...</span>
                 </div>
             </div>
             
@@ -762,20 +790,19 @@
                         <span class="card-icon">🔤</span>
                         Linguistic Patterns
                     </div>
-                    <div class="card-content" id="linguisticPatterns">
-                        <span class="pattern-indicator" id="hedging">Hedging</span>
-                        <span class="pattern-indicator" id="distancing">Distancing</span>
-                        <span class="pattern-indicator" id="vagueness">Vagueness</span>
-                        <span class="pattern-indicator" id="overQualifying">Over-Qualifying</span>
+                    <div class="card-content">
+                        <ul class="indicator-list" id="linguisticPatterns"></ul>
                     </div>
                 </div>
                 
                 <div class="analysis-card">
                     <div class="card-title">
-                        <span class="card-icon">📋</span>
-                        Detailed Analysis
+                        <span class="card-icon">😊</span>
+                        Emotional Indicators
                     </div>
-                    <div class="card-content" id="detailedAnalysis"></div>
+                    <div class="card-content">
+                        <ul class="indicator-list" id="emotionalIndicators"></ul>
+                    </div>
                 </div>
                 
                 <div class="analysis-card">
@@ -1017,6 +1044,39 @@
                 emotionalIndicators.push("Internal conflict markers");
             }
             
+            // Generate recommendations based on risk level
+            let recommendations = [];
+            if (riskScore < 25) {
+                recommendations = [
+                    "Statement appears straightforward with minimal deception indicators",
+                    "Continue normal verification procedures",
+                    "No immediate red flags detected"
+                ];
+            } else if (riskScore < 50) {
+                recommendations = [
+                    "Moderate caution advised - some deception markers present",
+                    "Consider asking clarifying questions about specific details",
+                    "Verify key claims through independent sources",
+                    "Pay attention to body language if in person"
+                ];
+            } else if (riskScore < 75) {
+                recommendations = [
+                    "Elevated risk detected - multiple deception indicators present",
+                    "Request specific documentation or evidence",
+                    "Cross-reference claims with known facts",
+                    "Consider involving a second opinion",
+                    "Document all interactions for future reference"
+                ];
+            } else {
+                recommendations = [
+                    "High risk alert - significant deception patterns detected",
+                    "Exercise extreme caution in any decisions",
+                    "Require concrete proof for all claims made",
+                    "Consider professional verification or investigation",
+                    "Protect yourself legally and document everything"
+                ];
+            }
+            
             // Pad arrays if needed
             while (keyIndicators.length < 3) {
                 if (indicatorCount > 5) {
@@ -1044,6 +1104,7 @@
                 keyIndicators: keyIndicators.slice(0, 5),
                 linguisticPatterns: linguisticPatterns.slice(0, 4),
                 emotionalIndicators: emotionalIndicators.slice(0, 4),
+                recommendations: recommendations,
                 metadata: {
                     wordCount,
                     indicatorCount,
@@ -1092,17 +1153,50 @@
             // Animate risk score
             const riskScore = document.getElementById('riskScore');
             const riskLevel = document.getElementById('riskLevel');
-            const confidenceLevel = document.getElementById('confidenceLevel');
-            const confidenceFill = document.getElementById('confidenceFill');
             
             // Animate score from 0 to actual value
             animateValue(riskScore, 0, data.riskScore, 1000, '%');
             riskLevel.textContent = data.riskLevel;
             
-            animateValue(confidenceLevel, 0, data.confidence, 1000, '%');
+            // Display Analysis Depth with stars
+            const stars = document.querySelectorAll('.star');
+            const depthText = document.getElementById('depthText');
+            let starCount = 0;
+            let depthDescription = '';
+            
+            if (data.confidence < 40) {
+                starCount = 1;
+                depthDescription = 'Basic';
+            } else if (data.confidence < 55) {
+                starCount = 2;
+                depthDescription = 'Limited';
+            } else if (data.confidence < 70) {
+                starCount = 3;
+                depthDescription = 'Moderate';
+            } else if (data.confidence < 85) {
+                starCount = 4;
+                depthDescription = 'Thorough';
+            } else {
+                starCount = 5;
+                depthDescription = 'Comprehensive';
+            }
+            
+            // Animate stars
+            stars.forEach((star, index) => {
+                setTimeout(() => {
+                    if (index < starCount) {
+                        star.textContent = '★';
+                        star.classList.add('filled');
+                    } else {
+                        star.textContent = '☆';
+                        star.classList.remove('filled');
+                    }
+                }, (index + 1) * 200);
+            });
+            
             setTimeout(() => {
-                confidenceFill.style.width = data.confidence + '%';
-            }, 100);
+                depthText.textContent = depthDescription;
+            }, starCount * 200);
             
             // Apply risk color
             riskScore.className = 'risk-score';
@@ -1129,24 +1223,49 @@
             });
             
             // Display linguistic patterns
-            if (data.linguisticPatterns) {
-                Object.keys(data.linguisticPatterns).forEach(pattern => {
-                    const element = document.getElementById(pattern);
-                    if (element) {
-                        setTimeout(() => {
-                            if (data.linguisticPatterns[pattern]) {
-                                element.classList.add('active');
-                            } else {
-                                element.classList.remove('active');
-                            }
-                        }, 500);
-                    }
+            const linguisticPatternsList = document.getElementById('linguisticPatterns');
+            linguisticPatternsList.innerHTML = '';
+            if (data.linguisticPatterns && data.linguisticPatterns.length > 0) {
+                data.linguisticPatterns.forEach((pattern, index) => {
+                    setTimeout(() => {
+                        const li = document.createElement('li');
+                        li.textContent = pattern;
+                        li.style.animation = 'fadeIn 0.5s';
+                        linguisticPatternsList.appendChild(li);
+                    }, 1200 + (index * 100));
                 });
             }
             
-            // Display analysis and recommendations
-            document.getElementById('detailedAnalysis').textContent = data.analysis;
-            document.getElementById('recommendations').textContent = data.recommendations;
+            // Display emotional indicators
+            const emotionalIndicatorsList = document.getElementById('emotionalIndicators');
+            emotionalIndicatorsList.innerHTML = '';
+            if (data.emotionalIndicators && data.emotionalIndicators.length > 0) {
+                data.emotionalIndicators.forEach((indicator, index) => {
+                    setTimeout(() => {
+                        const li = document.createElement('li');
+                        li.textContent = indicator;
+                        li.style.animation = 'fadeIn 0.5s';
+                        emotionalIndicatorsList.appendChild(li);
+                    }, 1400 + (index * 100));
+                });
+            }
+            
+            // Display recommendations
+            const recommendationsList = document.getElementById('recommendations');
+            recommendationsList.innerHTML = '';
+            if (data.recommendations && data.recommendations.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'indicator-list';
+                data.recommendations.forEach((rec, index) => {
+                    setTimeout(() => {
+                        const li = document.createElement('li');
+                        li.textContent = rec;
+                        li.style.animation = 'fadeIn 0.5s';
+                        ul.appendChild(li);
+                    }, 1600 + (index * 100));
+                });
+                recommendationsList.appendChild(ul);
+            }
             
             showResults();
         }
