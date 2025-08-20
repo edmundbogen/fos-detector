@@ -873,16 +873,16 @@
             // Based on actual deception research, these patterns need context
             const indicators = {
                 hedging: {
-                    patterns: ['sort of', 'kind of', 'maybe', 'perhaps', 'possibly', 'roughly', 'approximately', 'seemingly', 'apparently', 'supposedly'],
-                    weight: 2,  // Reduced from 3 - common in normal speech
+                    patterns: ['sort of', 'kind of', 'maybe', 'perhaps', 'possibly', 'roughly', 'approximately', 'seemingly', 'apparently', 'supposedly', 'basically', 'essentially'],
+                    weight: 1.5,  // Reduced weight
                     found: [],
-                    threshold: 2  // Only flag if multiple instances
+                    threshold: 1  // Lower threshold
                 },
                 qualifiers: {
                     patterns: ['just', 'only', 'simply', 'merely'],
-                    weight: 0.5,  // Heavily reduced from 2 - very common words
+                    weight: 0.3,  // Very low weight
                     found: [],
-                    threshold: 4  // Need many to be suspicious
+                    threshold: 3  // Lower threshold
                 },
                 overemphasis: {
                     patterns: ['to be honest', 'to tell the truth', 'believe me', 'trust me', 'i swear', 'swear to god', 'honestly', 'frankly'],
@@ -892,9 +892,9 @@
                 },
                 strongClaims: {
                     patterns: ['definitely', 'absolutely', 'certainly', 'obviously', 'clearly', 'undoubtedly', '100%', 'totally', 'completely'],
-                    weight: 1,  // Separated from overemphasis, lower weight
+                    weight: 0.8,  // Lower weight
                     found: [],
-                    threshold: 3
+                    threshold: 2  // Lower threshold
                 },
                 distancing: {
                     patterns: ['that person', 'that woman', 'that man', 'the person', 'one might', 'one would'],
@@ -916,9 +916,9 @@
                 },
                 cognitive: {
                     patterns: ['think', 'thought', 'believe', 'guess', 'assume', 'suppose'],
-                    weight: 0.8,  // Reduced from 2 - normal in opinions
+                    weight: 0.5,  // Low weight - normal in opinions
                     found: [],
-                    threshold: 3
+                    threshold: 2  // Lower threshold
                 },
                 emotional: {
                     patterns: ['feel', 'felt', 'upset', 'worried', 'anxious', 'nervous', 'scared', 'afraid'],
@@ -1029,28 +1029,42 @@
                 keyIndicators.push("Evasive brevity");
             }
             
-            // Calculate final risk score with more reasonable scaling
-            // Base score is lower, multiplier is gentler
-            const rawRiskScore = Math.min(totalScore * 2.5, 85);  // Max 85 instead of 95
-            let riskScore = Math.round(rawRiskScore);
+            // Calculate final risk score with balanced scaling
+            let riskScore;
             
-            // Ensure minimum score if no significant indicators
             if (significantIndicators === 0) {
-                riskScore = Math.min(riskScore, 15);  // Cap at 15% if no real indicators
+                // No significant indicators - very low risk
+                riskScore = Math.round(5 + Math.random() * 10);  // 5-15%
+            } else if (totalScore < 5) {
+                // Minimal indicators
+                riskScore = Math.round(15 + totalScore * 3);  // 15-30%
+            } else if (totalScore < 15) {
+                // Some indicators
+                riskScore = Math.round(25 + totalScore * 2);  // 25-55%
+            } else if (totalScore < 30) {
+                // Multiple indicators
+                riskScore = Math.round(40 + totalScore * 1.5);  // 40-85%
+            } else {
+                // Many indicators
+                riskScore = Math.min(Math.round(60 + totalScore), 90);  // 60-90%
             }
             
-            // Calculate confidence based on amount of analyzable content
+            // Calculate confidence based on both word count and indicators found
             let confidence;
+            const indicatorDensity = significantIndicators / Math.max(wordCount, 1) * 100;
+            
             if (wordCount < 10) {
-                confidence = 30 + Math.random() * 20;
-            } else if (wordCount < 30) {
-                confidence = 50 + Math.random() * 20;
+                confidence = 20 + Math.random() * 15;  // Very low confidence for short text
+            } else if (wordCount < 25) {
+                confidence = 35 + Math.random() * 15 + indicatorDensity;
             } else if (wordCount < 50) {
-                confidence = 65 + Math.random() * 20;
+                confidence = 50 + Math.random() * 15 + indicatorDensity;
+            } else if (wordCount < 100) {
+                confidence = 65 + Math.random() * 10 + indicatorDensity;
             } else {
-                confidence = 75 + Math.random() * 20;
+                confidence = 75 + Math.random() * 10 + indicatorDensity;
             }
-            confidence = Math.round(confidence);
+            confidence = Math.min(Math.round(confidence), 95);  // Cap at 95%
             
             // Determine risk level with adjusted thresholds
             let riskLevel;
