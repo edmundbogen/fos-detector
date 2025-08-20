@@ -974,23 +974,26 @@
             }
             
             // Build key indicators list - only for significant findings
-            if (indicators.overemphasis.found.length >= indicators.overemphasis.threshold) {
+            if (indicators.overemphasis && indicators.overemphasis.found.length >= indicators.overemphasis.threshold) {
                 keyIndicators.push(`Trust-building language detected (${indicators.overemphasis.found.length} instance${indicators.overemphasis.found.length > 1 ? 's' : ''}): "${indicators.overemphasis.found[0]}"`);
             }
             if (indicators.memoryIssues && indicators.memoryIssues.found.length >= indicators.memoryIssues.threshold) {
                 keyIndicators.push(`Memory inconsistencies noted: "${indicators.memoryIssues.found[0]}"`);
             }
-            if (indicators.distancing.found.length >= indicators.distancing.threshold) {
+            if (indicators.distancing && indicators.distancing.found.length >= indicators.distancing.threshold) {
                 keyIndicators.push(`Distancing language detected: "${indicators.distancing.found[0]}"`);
             }
-            if (indicators.hedging.found.length >= indicators.hedging.threshold) {
+            if (indicators.hedging && indicators.hedging.found.length >= indicators.hedging.threshold) {
                 keyIndicators.push(`Excessive hedging (${indicators.hedging.found.length} instances): "${indicators.hedging.found[0]}"`);
             }
-            if (indicators.vagueness.found.length >= indicators.vagueness.threshold) {
+            if (indicators.vagueness && indicators.vagueness.found.length >= indicators.vagueness.threshold) {
                 keyIndicators.push(`Vague terminology: "${indicators.vagueness.found[0]}"`);
             }
             if (indicators.minimization && indicators.minimization.found.length >= indicators.minimization.threshold) {
                 keyIndicators.push(`Minimization patterns: "${indicators.minimization.found[0]}"`);
+            }
+            if (indicators.strongClaims && indicators.strongClaims.found.length >= indicators.strongClaims.threshold) {
+                keyIndicators.push(`Excessive certainty (${indicators.strongClaims.found.length} instances)`);
             }
             
             // Additional analysis factors
@@ -1089,7 +1092,7 @@
             if (indicators.cognitive.found.length > 2) {
                 emotionalIndicators.push("High cognitive processing");
             }
-            if (indicators.overemphasis.found.length > 0) {
+            if (indicators.overemphasis.found.length > 0 || indicators.strongClaims.found.length > 2) {
                 emotionalIndicators.push("Defensive tone detected");
             }
             if (hasContradiction) {
