@@ -1215,20 +1215,36 @@ Edmund's FOS Detector - Professional Analysis Suite
         // Countdown Timer
         function updateCountdown() {
             const now = new Date();
-            const currentDay = now.getDay();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
             
-            // Calculate next Wednesday at 9 AM ET (assuming ET is UTC-5)
+            // Get current time in Eastern Time
+            const easternNow = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+            const currentDay = easternNow.getDay();
+            const currentHour = easternNow.getHours();
+            const currentMinute = easternNow.getMinutes();
+            
+            // Calculate days until next Wednesday (3 = Wednesday)
             let daysUntilWednesday = (3 - currentDay + 7) % 7;
-            if (daysUntilWednesday === 0 && (currentHour > 14 || (currentHour === 14 && currentMinute > 0))) {
-                // If it's Wednesday after 9 AM ET (2 PM UTC), target next Wednesday
+            
+            // If it's Wednesday and past 9:00 AM ET, go to next Wednesday
+            if (daysUntilWednesday === 0 && (currentHour > 9 || (currentHour === 9 && currentMinute > 0))) {
                 daysUntilWednesday = 7;
             }
             
+            // Create date for next mastermind
             const nextMastermind = new Date(now);
             nextMastermind.setDate(now.getDate() + daysUntilWednesday);
-            nextMastermind.setHours(14, 0, 0, 0); // 9 AM ET = 2 PM UTC (adjust based on timezone)
+            
+            // Set to 9:00 AM Eastern Time
+            // We need to account for EDT (UTC-4) vs EST (UTC-5)
+            const isDST = () => {
+                const jan = new Date(now.getFullYear(), 0, 1).getTimezoneOffset();
+                const jul = new Date(now.getFullYear(), 6, 1).getTimezoneOffset();
+                return Math.max(jan, jul) !== now.getTimezoneOffset();
+            };
+            
+            // 9 AM ET = 13:00 UTC (during EDT) or 14:00 UTC (during EST)
+            const utcHour = isDST() ? 13 : 14;
+            nextMastermind.setUTCHours(utcHour, 0, 0, 0);
             
             const diff = nextMastermind - now;
             
