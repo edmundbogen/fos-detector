@@ -1224,7 +1224,7 @@
                 findingsList.push(`• No significant deception patterns detected in the language used.`);
             }
             
-            detailedExplanation.push(findingsList.join('\n'));
+            detailedExplanation.push(findingsList.join('<br>'));
             
             // Explain the scoring
             detailedExplanation.push(`<strong>How I Calculated the ${riskScore}% Risk Score:</strong>`);
@@ -1248,7 +1248,7 @@
                 linguisticPatterns: linguisticPatterns.slice(0, 4),
                 emotionalIndicators: emotionalIndicators.slice(0, 4),
                 recommendations: recommendations,
-                detailedExplanation: detailedExplanation.join('\n\n'),
+                detailedExplanation: detailedExplanation.join('<br><br>'),
                 metadata: {
                     wordCount,
                     indicatorCount: significantIndicators,
@@ -1414,11 +1414,13 @@
             
             // Display detailed explanation
             const explanationDiv = document.getElementById('detailedExplanation');
-            if (data.detailedExplanation) {
+            if (explanationDiv && data.detailedExplanation) {
                 setTimeout(() => {
                     explanationDiv.innerHTML = data.detailedExplanation;
                     explanationDiv.style.animation = 'fadeIn 0.8s';
                 }, 2000);
+            } else if (!explanationDiv) {
+                console.error('Detailed explanation div not found');
             }
             
             showResults();
@@ -1454,10 +1456,21 @@
         }
         
         function clearInput() {
+            // Clear the input
             document.getElementById('statementInput').value = '';
             charCount.textContent = '0';
-            hideResults();  // Also hide the analysis results
+            
+            // Hide all results
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (resultsContainer) {
+                resultsContainer.classList.remove('active');
+            }
+            
+            // Clear error messages
             hideError();
+            
+            // Reset current analysis
+            currentAnalysis = null;
         }
         
         function saveToHistory(silent = false) {
