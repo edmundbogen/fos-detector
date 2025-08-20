@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Edmund's FOS Detector | Professional Analysis Suite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * {
             margin: 0;
@@ -14,6 +15,7 @@
             background-color: #0a1628;
             color: #ffffff;
             overflow-x: hidden;
+            transition: background-color 0.3s;
         }
         
         /* Header with navigation */
@@ -53,6 +55,13 @@
             justify-content: center;
             font-weight: bold;
             font-size: 24px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 168, 232, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 168, 232, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 168, 232, 0); }
         }
         
         .brand-text h1 {
@@ -69,6 +78,28 @@
             text-transform: uppercase;
         }
         
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .history-btn, .voice-btn, .compare-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .history-btn:hover, .voice-btn:hover, .compare-btn:hover {
+            background: rgba(0, 168, 232, 0.2);
+            border-color: #00a8e8;
+        }
+        
         /* Main Content */
         .main-content {
             margin-top: 100px;
@@ -83,6 +114,15 @@
             font-weight: 300;
             margin-bottom: 10px;
             text-align: center;
+            background: linear-gradient(45deg, #00a8e8, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
         }
         
         .section-subtitle {
@@ -100,6 +140,14 @@
             border-radius: 8px;
             padding: 30px;
             margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
         
         .input-label {
@@ -107,7 +155,27 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #00a8e8;
-            margin-bottom: 15px;
+        }
+        
+        .input-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .clear-btn, .example-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 5px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .clear-btn:hover, .example-btn:hover {
+            border-color: #00a8e8;
+            color: #00a8e8;
         }
         
         textarea {
@@ -121,12 +189,14 @@
             font-family: inherit;
             border-radius: 4px;
             resize: vertical;
+            transition: all 0.3s;
         }
         
         textarea:focus {
             outline: none;
             border-color: #00a8e8;
             background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(0, 168, 232, 0.1);
         }
         
         .char-counter {
@@ -149,6 +219,23 @@
             transition: all 0.3s;
             display: block;
             margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .analyze-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .analyze-button:hover:before {
+            left: 100%;
         }
         
         .analyze-button:hover {
@@ -211,23 +298,46 @@
             padding: 30px;
             margin-bottom: 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .risk-meter:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 168, 232, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .risk-score {
-            font-size: 48px;
+            font-size: 72px;
             font-weight: bold;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s;
         }
         
         .risk-level {
             font-size: 24px;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
         
-        .risk-low { color: #00ff00; }
-        .risk-moderate { color: #ffff00; }
-        .risk-elevated { color: #ff9900; }
-        .risk-high { color: #ff0000; }
+        .risk-low { color: #00ff00; text-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
+        .risk-moderate { color: #ffff00; text-shadow: 0 0 20px rgba(255, 255, 0, 0.5); }
+        .risk-elevated { color: #ff9900; text-shadow: 0 0 20px rgba(255, 153, 0, 0.5); }
+        .risk-high { color: #ff0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
         
         .confidence-bar {
             width: 100%;
@@ -236,12 +346,31 @@
             border-radius: 10px;
             overflow: hidden;
             margin-top: 20px;
+            position: relative;
+            z-index: 1;
         }
         
         .confidence-fill {
             height: 100%;
             background: linear-gradient(90deg, #00a8e8, #00ff00);
             transition: width 1s ease;
+            position: relative;
+        }
+        
+        .confidence-fill:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         .analysis-grid {
@@ -256,6 +385,13 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 25px;
+            transition: all 0.3s;
+        }
+        
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 168, 232, 0.2);
+            border-color: rgba(0, 168, 232, 0.3);
         }
         
         .card-title {
@@ -264,6 +400,15 @@
             letter-spacing: 1px;
             color: #00a8e8;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
         }
         
         .card-content {
@@ -279,6 +424,14 @@
         .indicator-list li {
             padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .indicator-list li:before {
+            content: '▸';
+            color: #00a8e8;
         }
         
         .indicator-list li:last-child {
@@ -293,10 +446,119 @@
             border-radius: 20px;
             font-size: 12px;
             margin: 4px;
+            transition: all 0.3s;
         }
         
         .pattern-indicator.active {
             background: rgba(0, 168, 232, 0.4);
+            transform: scale(1.1);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            background: rgba(0, 168, 232, 0.2);
+            border-color: #00a8e8;
+            transform: translateY(-2px);
+        }
+        
+        /* History Modal */
+        .history-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .history-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .history-content {
+            background: #0a1628;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00a8e8;
+        }
+        
+        .history-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+        }
+        
+        .history-text {
+            font-size: 14px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-risk {
+            font-size: 12px;
+            color: #00a8e8;
         }
         
         /* Error State */
@@ -313,6 +575,77 @@
         
         .error-message.active {
             display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .logo {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .brand-text h1 {
+                font-size: 14px;
+            }
+            
+            .header-controls {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .risk-score {
+                font-size: 48px;
+            }
+            
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Voice Recording Animation */
+        .voice-recording {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ff0000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            animation: recording-pulse 1.5s infinite;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .voice-recording.active {
+            display: flex;
+        }
+        
+        @keyframes recording-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
         }
     </style>
 </head>
@@ -326,6 +659,11 @@
                     <p>Professional Deception Analysis Suite</p>
                 </div>
             </div>
+            <div class="header-controls">
+                <button class="history-btn" onclick="toggleHistory()">📊 History</button>
+                <button class="voice-btn" onclick="toggleVoiceInput()">🎤 Voice</button>
+                <button class="compare-btn" onclick="toggleCompareMode()">⚖️ Compare</button>
+            </div>
         </div>
     </div>
 
@@ -334,7 +672,13 @@
         <p class="section-subtitle">Advanced Pattern Recognition & Behavioral Analysis</p>
         
         <div class="input-container">
-            <div class="input-label">Enter Statement for Analysis</div>
+            <div class="input-header">
+                <div class="input-label">Enter Statement for Analysis</div>
+                <div class="input-controls">
+                    <button class="example-btn" onclick="loadExample()">Load Example</button>
+                    <button class="clear-btn" onclick="clearInput()">Clear</button>
+                </div>
+            </div>
             <textarea 
                 id="statementInput" 
                 placeholder="Type or paste the statement you want to analyze..."
@@ -368,14 +712,20 @@
             
             <div class="analysis-grid">
                 <div class="analysis-card">
-                    <div class="card-title">Key Indicators</div>
+                    <div class="card-title">
+                        <span class="card-icon">⚠️</span>
+                        Key Indicators
+                    </div>
                     <div class="card-content">
                         <ul class="indicator-list" id="keyIndicators"></ul>
                     </div>
                 </div>
                 
                 <div class="analysis-card">
-                    <div class="card-title">Linguistic Patterns</div>
+                    <div class="card-title">
+                        <span class="card-icon">🔤</span>
+                        Linguistic Patterns
+                    </div>
                     <div class="card-content" id="linguisticPatterns">
                         <span class="pattern-indicator" id="hedging">Hedging</span>
                         <span class="pattern-indicator" id="distancing">Distancing</span>
@@ -385,28 +735,64 @@
                 </div>
                 
                 <div class="analysis-card">
-                    <div class="card-title">Detailed Analysis</div>
+                    <div class="card-title">
+                        <span class="card-icon">📋</span>
+                        Detailed Analysis
+                    </div>
                     <div class="card-content" id="detailedAnalysis"></div>
                 </div>
                 
                 <div class="analysis-card">
-                    <div class="card-title">Recommendations</div>
+                    <div class="card-title">
+                        <span class="card-icon">💡</span>
+                        Recommendations
+                    </div>
                     <div class="card-content" id="recommendations"></div>
                 </div>
             </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" onclick="saveToHistory()">
+                    <span>💾</span> Save Analysis
+                </button>
+                <button class="action-btn" onclick="exportAnalysis()">
+                    <span>📥</span> Export Report
+                </button>
+                <button class="action-btn" onclick="shareAnalysis()">
+                    <span>🔗</span> Share Link
+                </button>
+            </div>
         </div>
+    </div>
+    
+    <!-- History Modal -->
+    <div class="history-modal" id="historyModal">
+        <div class="history-content">
+            <div class="history-header">
+                <h2>Analysis History</h2>
+                <button class="close-modal" onclick="toggleHistory()">✕</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+    </div>
+    
+    <!-- Voice Recording Indicator -->
+    <div class="voice-recording" id="voiceIndicator" onclick="stopRecording()">
+        <span style="color: white;">🎤</span>
     </div>
 
     <script>
         // Character counter
         const textarea = document.getElementById('statementInput');
         const charCount = document.getElementById('charCount');
+        let currentAnalysis = null;
+        let analysisHistory = JSON.parse(localStorage.getItem('fosHistory') || '[]');
         
         textarea.addEventListener('input', function() {
             charCount.textContent = this.value.length;
         });
         
-        // API configuration - Will be replaced with your Vercel URL after deployment
+        // API configuration
         const API_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3000/api/analyze'
             : '/api/analyze';
@@ -439,7 +825,15 @@
                 }
                 
                 const data = await response.json();
+                currentAnalysis = {
+                    ...data,
+                    statement,
+                    timestamp: new Date().toISOString()
+                };
                 displayResults(data);
+                
+                // Auto-save to history
+                saveToHistory(true);
             } catch (error) {
                 showError(error.message || 'An error occurred during analysis. Please try again.');
             } finally {
@@ -449,16 +843,20 @@
         }
         
         function displayResults(data) {
-            // Set risk score and level
+            // Animate risk score
             const riskScore = document.getElementById('riskScore');
             const riskLevel = document.getElementById('riskLevel');
             const confidenceLevel = document.getElementById('confidenceLevel');
             const confidenceFill = document.getElementById('confidenceFill');
             
-            riskScore.textContent = data.riskScore + '%';
+            // Animate score from 0 to actual value
+            animateValue(riskScore, 0, data.riskScore, 1000, '%');
             riskLevel.textContent = data.riskLevel;
-            confidenceLevel.textContent = data.confidence + '%';
-            confidenceFill.style.width = data.confidence + '%';
+            
+            animateValue(confidenceLevel, 0, data.confidence, 1000, '%');
+            setTimeout(() => {
+                confidenceFill.style.width = data.confidence + '%';
+            }, 100);
             
             // Apply risk color
             riskScore.className = 'risk-score';
@@ -472,13 +870,16 @@
                 riskScore.classList.add('risk-high');
             }
             
-            // Display key indicators
+            // Display key indicators with animation
             const keyIndicatorsList = document.getElementById('keyIndicators');
             keyIndicatorsList.innerHTML = '';
-            data.keyIndicators.forEach(indicator => {
-                const li = document.createElement('li');
-                li.textContent = indicator;
-                keyIndicatorsList.appendChild(li);
+            data.keyIndicators.forEach((indicator, index) => {
+                setTimeout(() => {
+                    const li = document.createElement('li');
+                    li.textContent = indicator;
+                    li.style.animation = 'fadeIn 0.5s';
+                    keyIndicatorsList.appendChild(li);
+                }, index * 100);
             });
             
             // Display linguistic patterns
@@ -486,11 +887,13 @@
                 Object.keys(data.linguisticPatterns).forEach(pattern => {
                     const element = document.getElementById(pattern);
                     if (element) {
-                        if (data.linguisticPatterns[pattern]) {
-                            element.classList.add('active');
-                        } else {
-                            element.classList.remove('active');
-                        }
+                        setTimeout(() => {
+                            if (data.linguisticPatterns[pattern]) {
+                                element.classList.add('active');
+                            } else {
+                                element.classList.remove('active');
+                            }
+                        }, 500);
                     }
                 });
             }
@@ -500,6 +903,215 @@
             document.getElementById('recommendations').textContent = data.recommendations;
             
             showResults();
+        }
+        
+        function animateValue(element, start, end, duration, suffix = '') {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    element.textContent = end + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.round(current) + suffix;
+                }
+            }, 16);
+        }
+        
+        function loadExample() {
+            const examples = [
+                "I definitely completed all the required tasks yesterday and sent them to you via email",
+                "The project is basically done, I just need to maybe fix a few small things",
+                "I'm telling you the truth, I swear I didn't know about the meeting",
+                "To be honest, I think someone else might have made that mistake",
+                "I completed the report last week and submitted it on time"
+            ];
+            const randomExample = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('statementInput').value = randomExample;
+            charCount.textContent = randomExample.length;
+        }
+        
+        function clearInput() {
+            document.getElementById('statementInput').value = '';
+            charCount.textContent = '0';
+        }
+        
+        function saveToHistory(silent = false) {
+            if (!currentAnalysis) return;
+            
+            // Add to history
+            analysisHistory.unshift(currentAnalysis);
+            
+            // Keep only last 20 analyses
+            if (analysisHistory.length > 20) {
+                analysisHistory = analysisHistory.slice(0, 20);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('fosHistory', JSON.stringify(analysisHistory));
+            
+            if (!silent) {
+                showError('Analysis saved to history!');
+                setTimeout(hideError, 2000);
+            }
+        }
+        
+        function toggleHistory() {
+            const modal = document.getElementById('historyModal');
+            modal.classList.toggle('active');
+            
+            if (modal.classList.contains('active')) {
+                displayHistory();
+            }
+        }
+        
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            if (analysisHistory.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5);">No analysis history yet</p>';
+                return;
+            }
+            
+            historyList.innerHTML = analysisHistory.map((item, index) => `
+                <div class="history-item" onclick="loadFromHistory(${index})">
+                    <div class="history-date">${new Date(item.timestamp).toLocaleString()}</div>
+                    <div class="history-text">${item.statement}</div>
+                    <div class="history-risk">Risk Score: ${item.riskScore}% - ${item.riskLevel}</div>
+                </div>
+            `).join('');
+        }
+        
+        function loadFromHistory(index) {
+            const item = analysisHistory[index];
+            document.getElementById('statementInput').value = item.statement;
+            charCount.textContent = item.statement.length;
+            displayResults(item);
+            toggleHistory();
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function exportAnalysis() {
+            if (!currentAnalysis) return;
+            
+            const report = `
+FOS DETECTOR ANALYSIS REPORT
+Generated: ${new Date().toLocaleString()}
+================================
+
+STATEMENT:
+${currentAnalysis.statement}
+
+RISK ASSESSMENT:
+Risk Score: ${currentAnalysis.riskScore}%
+Risk Level: ${currentAnalysis.riskLevel}
+Confidence: ${currentAnalysis.confidence}%
+
+KEY INDICATORS:
+${currentAnalysis.keyIndicators.map(i => '• ' + i).join('\n')}
+
+ANALYSIS:
+${currentAnalysis.analysis}
+
+RECOMMENDATIONS:
+${currentAnalysis.recommendations}
+
+================================
+Edmund's FOS Detector - Professional Analysis Suite
+            `;
+            
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fos_analysis_${Date.now()}.txt`;
+            a.click();
+        }
+        
+        function shareAnalysis() {
+            if (!currentAnalysis) return;
+            
+            const shareText = `FOS Analysis: Risk Score ${currentAnalysis.riskScore}% - ${currentAnalysis.riskLevel}`;
+            const shareUrl = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'FOS Detector Analysis',
+                    text: shareText,
+                    url: shareUrl
+                });
+            } else {
+                // Copy to clipboard
+                navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
+                showError('Link copied to clipboard!');
+                setTimeout(hideError, 2000);
+            }
+        }
+        
+        // Voice input (using Web Speech API)
+        let recognition = null;
+        let isRecording = false;
+        
+        function toggleVoiceInput() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                showError('Voice input is not supported in your browser.');
+                return;
+            }
+            
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+        
+        function startRecording() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onstart = () => {
+                isRecording = true;
+                document.getElementById('voiceIndicator').classList.add('active');
+            };
+            
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if (finalTranscript) {
+                    const currentText = document.getElementById('statementInput').value;
+                    document.getElementById('statementInput').value = currentText + ' ' + finalTranscript;
+                    charCount.textContent = document.getElementById('statementInput').value.length;
+                }
+            };
+            
+            recognition.onerror = () => {
+                stopRecording();
+                showError('Voice recognition error. Please try again.');
+            };
+            
+            recognition.start();
+        }
+        
+        function stopRecording() {
+            if (recognition) {
+                recognition.stop();
+                isRecording = false;
+                document.getElementById('voiceIndicator').classList.remove('active');
+            }
+        }
+        
+        function toggleCompareMode() {
+            showError('Compare mode coming soon! This will allow you to analyze multiple statements side by side.');
+            setTimeout(hideError, 3000);
         }
         
         function showLoading() {
@@ -541,6 +1153,13 @@
         textarea.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 analyzeStatement();
+            }
+        });
+        
+        // Load history count on page load
+        window.addEventListener('load', () => {
+            if (analysisHistory.length > 0) {
+                document.querySelector('.history-btn').textContent = `📊 History (${analysisHistory.length})`;
             }
         });
     </script>
