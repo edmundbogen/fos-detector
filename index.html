@@ -84,6 +84,34 @@
             align-items: center;
         }
         
+        /* Countdown Timer */
+        .countdown-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 168, 232, 0.3);
+        }
+        
+        .countdown-label {
+            font-size: 12px;
+            color: #00a8e8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .countdown-timer {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            min-width: 120px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
         .history-btn, .voice-btn, .compare-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -590,6 +618,10 @@
                 padding: 15px 20px;
             }
             
+            .countdown-section {
+                display: none;
+            }
+            
             .logo {
                 width: 40px;
                 height: 40px;
@@ -658,6 +690,10 @@
                     <h1>EDMUND'S FOS DETECTOR</h1>
                     <p>Professional Deception Analysis Suite</p>
                 </div>
+            </div>
+            <div class="countdown-section">
+                <div class="countdown-label">Edmund's Next Mastermind Starts in:</div>
+                <div class="countdown-timer" id="countdownTimer">Loading...</div>
             </div>
             <div class="header-controls">
                 <button class="history-btn" onclick="toggleHistory()">📊 History</button>
@@ -752,6 +788,9 @@
             </div>
             
             <div class="action-buttons">
+                <button class="action-btn" onclick="startNewAnalysis()">
+                    <span>🔄</span> New Analysis
+                </button>
                 <button class="action-btn" onclick="saveToHistory()">
                     <span>💾</span> Save Analysis
                 </button>
@@ -1156,11 +1195,86 @@ Edmund's FOS Detector - Professional Analysis Suite
             }
         });
         
+        // New Analysis function
+        function startNewAnalysis() {
+            // Clear input
+            document.getElementById('statementInput').value = '';
+            charCount.textContent = '0';
+            
+            // Hide results
+            hideResults();
+            hideError();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Focus on input
+            document.getElementById('statementInput').focus();
+        }
+        
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date();
+            const currentDay = now.getDay();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // Calculate next Wednesday at 9 AM ET (assuming ET is UTC-5)
+            let daysUntilWednesday = (3 - currentDay + 7) % 7;
+            if (daysUntilWednesday === 0 && (currentHour > 14 || (currentHour === 14 && currentMinute > 0))) {
+                // If it's Wednesday after 9 AM ET (2 PM UTC), target next Wednesday
+                daysUntilWednesday = 7;
+            }
+            
+            const nextMastermind = new Date(now);
+            nextMastermind.setDate(now.getDate() + daysUntilWednesday);
+            nextMastermind.setHours(14, 0, 0, 0); // 9 AM ET = 2 PM UTC (adjust based on timezone)
+            
+            const diff = nextMastermind - now;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                let countdownText = '';
+                if (days > 0) {
+                    countdownText = `${days}d ${hours}h ${minutes}m`;
+                } else if (hours > 0) {
+                    countdownText = `${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    countdownText = `${minutes}m ${seconds}s`;
+                }
+                
+                document.getElementById('countdownTimer').textContent = countdownText;
+                
+                // Add urgency color
+                const timerElement = document.getElementById('countdownTimer');
+                if (days === 0 && hours < 1) {
+                    timerElement.style.color = '#ff0000';
+                    timerElement.style.textShadow = '0 0 10px rgba(255, 0, 0, 0.5)';
+                } else if (days === 0) {
+                    timerElement.style.color = '#ffff00';
+                    timerElement.style.textShadow = '0 0 10px rgba(255, 255, 0, 0.5)';
+                } else {
+                    timerElement.style.color = '#00ff88';
+                    timerElement.style.textShadow = '0 0 10px rgba(0, 255, 136, 0.5)';
+                }
+            } else {
+                document.getElementById('countdownTimer').textContent = 'Starting Soon!';
+            }
+        }
+        
         // Load history count on page load
         window.addEventListener('load', () => {
             if (analysisHistory.length > 0) {
                 document.querySelector('.history-btn').textContent = `📊 History (${analysisHistory.length})`;
             }
+            
+            // Start countdown timer
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
         });
     </script>
 </body>
