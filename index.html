@@ -367,55 +367,7 @@
         .risk-elevated { color: #ff9900; text-shadow: 0 0 20px rgba(255, 153, 0, 0.5); }
         .risk-high { color: #ff0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
         
-        .analysis-depth-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .depth-label {
-            color: #00a8e8;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .depth-stars {
-            display: flex;
-            gap: 5px;
-            font-size: 24px;
-        }
-        
-        .star {
-            color: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .star.filled {
-            color: #ffd700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            animation: starPulse 0.5s ease;
-        }
-        
-        .depth-text {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            font-style: italic;
-            min-width: 100px;
-        }
-        
-        @keyframes starPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
+        /* Removed old analysis depth styles - now using simple 1-10 score */
         
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
