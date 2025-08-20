@@ -759,66 +759,36 @@
         
         <div class="results-container" id="resultsContainer">
             <div class="risk-meter">
-                <div class="risk-score" id="riskScore">0%</div>
-                <div class="risk-level" id="riskLevel">Analyzing...</div>
-                <div class="analysis-depth-container">
-                    <span class="depth-label">Analysis Depth:</span>
-                    <span class="depth-stars" id="analysisDepth">
-                        <span class="star" id="star1">☆</span>
-                        <span class="star" id="star2">☆</span>
-                        <span class="star" id="star3">☆</span>
-                        <span class="star" id="star4">☆</span>
-                        <span class="star" id="star5">☆</span>
-                    </span>
-                    <span class="depth-text" id="depthText">Analyzing...</span>
-                </div>
+                <div class="risk-score" id="riskScore" style="font-size: 72px;">0</div>
+                <div class="risk-level" id="riskLevel" style="font-size: 24px; margin-top: 10px;">Deception Likelihood</div>
+                <div class="score-explanation" id="scoreExplanation" style="margin-top: 15px; font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5;"></div>
             </div>
             
             <div class="analysis-grid">
-                <div class="analysis-card">
+                <div class="analysis-card" style="grid-column: 1 / -1;">
                     <div class="card-title">
-                        <span class="card-icon">⚠️</span>
-                        Key Indicators
+                        <span class="card-icon">🔍</span>
+                        Deceptive Indicators
                     </div>
                     <div class="card-content">
-                        <ul class="indicator-list" id="keyIndicators"></ul>
+                        <ul class="indicator-list" id="deceptiveIndicators" style="line-height: 1.8;"></ul>
                     </div>
-                </div>
-                
-                <div class="analysis-card">
-                    <div class="card-title">
-                        <span class="card-icon">🔤</span>
-                        Linguistic Patterns
-                    </div>
-                    <div class="card-content">
-                        <ul class="indicator-list" id="linguisticPatterns"></ul>
-                    </div>
-                </div>
-                
-                <div class="analysis-card">
-                    <div class="card-title">
-                        <span class="card-icon">😊</span>
-                        Emotional Indicators
-                    </div>
-                    <div class="card-content">
-                        <ul class="indicator-list" id="emotionalIndicators"></ul>
-                    </div>
-                </div>
-                
-                <div class="analysis-card">
-                    <div class="card-title">
-                        <span class="card-icon">💡</span>
-                        Recommendations
-                    </div>
-                    <div class="card-content" id="recommendations"></div>
                 </div>
                 
                 <div class="analysis-card" style="grid-column: 1 / -1;">
                     <div class="card-title">
-                        <span class="card-icon">📊</span>
-                        Detailed Analysis Explanation
+                        <span class="card-icon">🤔</span>
+                        Alternative Explanations
                     </div>
-                    <div class="card-content" id="detailedExplanation" style="text-align: left; line-height: 1.8;"></div>
+                    <div class="card-content" id="alternativeExplanations" style="text-align: left; line-height: 1.8; color: rgba(255,255,255,0.9);"></div>
+                </div>
+                
+                <div class="analysis-card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span class="card-icon">💬</span>
+                        Suggested Response Strategy
+                    </div>
+                    <div class="card-content" id="responseStrategy" style="text-align: left; line-height: 1.8; color: rgba(255,255,255,0.9);"></div>
                 </div>
             </div>
             
@@ -1037,224 +1007,119 @@
                 keyIndicators.push("Evasive brevity");
             }
             
-            // Calculate final risk score with balanced scaling
-            let riskScore;
+            // Calculate deception likelihood score (1-10 scale)
+            let deceptionScore;
+            let scoreExplanation = "";
             
             if (significantIndicators === 0) {
-                // No significant indicators - very low risk
-                riskScore = Math.round(5 + Math.random() * 10);  // 5-15%
+                deceptionScore = 1 + Math.floor(Math.random() * 2);  // 1-2
+                scoreExplanation = "The text appears straightforward with no significant deception markers.";
             } else if (totalScore < 5) {
-                // Minimal indicators
-                riskScore = Math.round(15 + totalScore * 3);  // 15-30%
-            } else if (totalScore < 15) {
-                // Some indicators
-                riskScore = Math.round(25 + totalScore * 2);  // 25-55%
-            } else if (totalScore < 30) {
-                // Multiple indicators
-                riskScore = Math.round(40 + totalScore * 1.5);  // 40-85%
+                deceptionScore = 2 + Math.floor(totalScore / 2);  // 2-4
+                scoreExplanation = "Minor linguistic patterns detected that are common in normal communication.";
+            } else if (totalScore < 10) {
+                deceptionScore = 4 + Math.floor(totalScore / 3);  // 4-6
+                scoreExplanation = "Several patterns suggest possible uncertainty or evasiveness.";
+            } else if (totalScore < 20) {
+                deceptionScore = 6 + Math.floor(totalScore / 5);  // 6-8
+                scoreExplanation = "Multiple deception indicators present that warrant careful consideration.";
             } else {
-                // Many indicators
-                riskScore = Math.min(Math.round(60 + totalScore), 90);  // 60-90%
+                deceptionScore = Math.min(8 + Math.floor(totalScore / 10), 10);  // 8-10
+                scoreExplanation = "Strong deception patterns detected throughout the text.";
             }
             
-            // Calculate confidence based on both word count and indicators found
-            let confidence;
-            const indicatorDensity = significantIndicators / Math.max(wordCount, 1) * 100;
+            // Build deceptive indicators list
+            let deceptiveIndicators = [];
             
-            if (wordCount < 10) {
-                confidence = 20 + Math.random() * 15;  // Very low confidence for short text
-            } else if (wordCount < 25) {
-                confidence = 35 + Math.random() * 15 + indicatorDensity;
-            } else if (wordCount < 50) {
-                confidence = 50 + Math.random() * 15 + indicatorDensity;
-            } else if (wordCount < 100) {
-                confidence = 65 + Math.random() * 10 + indicatorDensity;
-            } else {
-                confidence = 75 + Math.random() * 10 + indicatorDensity;
+            if (indicators.overemphasis.found.length > 0) {
+                deceptiveIndicators.push(`<strong>Exaggeration/absolute claims:</strong> Uses phrases like "${indicators.overemphasis.found[0]}" to force belief`);
             }
-            confidence = Math.min(Math.round(confidence), 95);  // Cap at 95%
-            
-            // Determine risk level with adjusted thresholds
-            let riskLevel;
-            if (riskScore < 20) {
-                riskLevel = "Minimal Risk";
-            } else if (riskScore < 40) {
-                riskLevel = "Low Risk";
-            } else if (riskScore < 60) {
-                riskLevel = "Moderate Risk";
-            } else if (riskScore < 75) {
-                riskLevel = "Elevated Risk";
-            } else {
-                riskLevel = "High Risk";
-            }
-            
-            // Generate linguistic patterns
-            const linguisticPatterns = [];
-            if (indicators.hedging.found.length > 0) {
-                linguisticPatterns.push("Uncertain language usage");
-            }
-            if (indicators.qualifiers.found.length > 2) {
-                linguisticPatterns.push("Excessive qualifying statements");
-            }
-            if (indicators.negation.found.length > 3) {
-                linguisticPatterns.push("High negation frequency");
-            }
-            if (avgWordLength > 5) {
-                linguisticPatterns.push("Complex vocabulary (possible rehearsal)");
-            }
-            if (sentenceCount === 1 && wordCount > 30) {
-                linguisticPatterns.push("Run-on sentence structure");
-            }
-            
-            // Generate emotional indicators
-            const emotionalIndicators = [];
-            if (indicators.emotional.found.length > 0) {
-                emotionalIndicators.push("Emotional language present");
-            }
-            if (indicators.cognitive.found.length > 2) {
-                emotionalIndicators.push("High cognitive processing");
-            }
-            if (indicators.overemphasis.found.length > 0 || indicators.strongClaims.found.length > 2) {
-                emotionalIndicators.push("Defensive tone detected");
+            if (indicators.emotional && indicators.emotional.found.length >= 2) {
+                deceptiveIndicators.push(`<strong>Overuse of emotional language:</strong> Multiple emotional appeals (${indicators.emotional.found.length} instances)`);
             }
             if (hasContradiction) {
-                emotionalIndicators.push("Internal conflict markers");
-            }
-            
-            // Generate recommendations based on risk level
-            let recommendations = [];
-            if (riskScore < 20) {
-                recommendations = [
-                    "Statement appears genuine with minimal concerns",
-                    "Standard verification is sufficient",
-                    "No significant deception markers detected"
-                ];
-            } else if (riskScore < 40) {
-                recommendations = [
-                    "Minor indicators present - likely normal communication",
-                    "Consider context and speaker's typical patterns",
-                    "Ask follow-up questions if anything seems unclear"
-                ];
-            } else if (riskScore < 60) {
-                recommendations = [
-                    "Some deception markers detected - proceed with caution",
-                    "Verify important claims independently",
-                    "Ask specific, detailed follow-up questions",
-                    "Compare with previous statements if available"
-                ];
-            } else if (riskScore < 75) {
-                recommendations = [
-                    "Multiple concerning patterns identified",
-                    "Request documentation or evidence for claims",
-                    "Cross-reference all important information",
-                    "Consider getting a second opinion",
-                    "Document this conversation for future reference"
-                ];
-            } else {
-                recommendations = [
-                    "Significant deception indicators detected",
-                    "Exercise strong caution with this information",
-                    "Require proof for all important claims",
-                    "Consider professional verification if stakes are high",
-                    "Protect your interests and document everything"
-                ];
-            }
-            
-            // Pad arrays if needed
-            while (keyIndicators.length < 3) {
-                if (significantIndicators > 5) {
-                    keyIndicators.push("Multiple deception markers present");
-                } else if (wordCount < 20) {
-                    keyIndicators.push("Limited content for full analysis");
-                } else {
-                    keyIndicators.push("Subtle linguistic variations detected");
-                }
-                break;
-            }
-            
-            while (linguisticPatterns.length < 3) {
-                linguisticPatterns.push(["Baseline language patterns", "Standard sentence structure", "Typical word choice"][linguisticPatterns.length]);
-            }
-            
-            while (emotionalIndicators.length < 3) {
-                emotionalIndicators.push(["Neutral emotional state", "Stable affect presentation", "Consistent tone maintained"][emotionalIndicators.length]);
-            }
-            
-            // Generate detailed explanation
-            let detailedExplanation = [];
-            
-            // Opening summary
-            if (riskScore < 20) {
-                detailedExplanation.push(`<strong>Analysis Summary:</strong> This statement appears largely genuine with minimal deception indicators.`);
-            } else if (riskScore < 40) {
-                detailedExplanation.push(`<strong>Analysis Summary:</strong> This statement shows some linguistic patterns worth noting, though not necessarily deceptive.`);
-            } else if (riskScore < 60) {
-                detailedExplanation.push(`<strong>Analysis Summary:</strong> Multiple concerning patterns detected that warrant closer examination.`);
-            } else {
-                detailedExplanation.push(`<strong>Analysis Summary:</strong> Significant deception indicators present throughout this statement.`);
-            }
-            
-            // Explain what was found
-            detailedExplanation.push(`<strong>What I Found:</strong>`);
-            
-            let findingsList = [];
-            if (indicators.overemphasis.found.length > 0) {
-                findingsList.push(`• <em>Trust-building phrases</em> (${indicators.overemphasis.found.length}x): When people say "${indicators.overemphasis.found[0]}" unprompted, it often signals they're trying too hard to be believed.`);
-            }
-            if (indicators.hedging.found.length >= indicators.hedging.threshold) {
-                findingsList.push(`• <em>Hedging language</em> (${indicators.hedging.found.length}x): Words like "${indicators.hedging.found[0]}" create distance from claims, suggesting uncertainty or reluctance to commit.`);
-            }
-            if (indicators.memoryIssues.found.length > 0) {
-                findingsList.push(`• <em>Memory issues</em>: Phrases like "${indicators.memoryIssues.found[0]}" can indicate fabrication or selective recall.`);
-            }
-            if (indicators.distancing.found.length > 0) {
-                findingsList.push(`• <em>Distancing language</em>: Using "${indicators.distancing.found[0]}" instead of direct references suggests psychological distancing from the subject.`);
+                deceptiveIndicators.push(`<strong>Contradictions:</strong> Contains conflicting statements or logical inconsistencies`);
             }
             if (indicators.vagueness.found.length >= indicators.vagueness.threshold) {
-                findingsList.push(`• <em>Vague terminology</em> (${indicators.vagueness.found.length}x): Non-specific words like "${indicators.vagueness.found[0]}" avoid providing concrete details.`);
+                deceptiveIndicators.push(`<strong>Vagueness:</strong> Avoids specifics with terms like "${indicators.vagueness.found[0]}"`);
             }
-            if (indicators.strongClaims.found.length >= indicators.strongClaims.threshold) {
-                findingsList.push(`• <em>Overconfident language</em> (${indicators.strongClaims.found.length}x): Excessive use of absolutes like "${indicators.strongClaims.found[0]}" can compensate for uncertainty.`);
+            if (indicators.hedging.found.length >= 2) {
+                deceptiveIndicators.push(`<strong>Excessive hedging:</strong> Overuse of qualifiers ("${indicators.hedging.found[0]}", "${indicators.hedging.found[1] || indicators.hedging.found[0]}")`);
             }
-            if (indicators.cognitive.found.length >= indicators.cognitive.threshold) {
-                findingsList.push(`• <em>Cognitive processing</em> (${indicators.cognitive.found.length}x): Multiple instances of "${indicators.cognitive.found[0]}" suggest active story construction.`);
+            if (indicators.distancing.found.length > 0) {
+                deceptiveIndicators.push(`<strong>Distancing language:</strong> Psychological separation from claims`);
+            }
+            if (indicators.memoryIssues.found.length > 0) {
+                deceptiveIndicators.push(`<strong>Memory lapses:</strong> Convenient forgetfulness with "${indicators.memoryIssues.found[0]}"`);
+            }
+            if (tooShort) {
+                deceptiveIndicators.push(`<strong>Evasive brevity:</strong> Unusually short response avoiding detail`);
+            }
+            if (excessiveDetail) {
+                deceptiveIndicators.push(`<strong>Over-explanation:</strong> Excessive unnecessary details (possible overcompensation)`);
             }
             
-            if (findingsList.length === 0) {
-                findingsList.push(`• No significant deception patterns detected in the language used.`);
+            if (deceptiveIndicators.length === 0) {
+                deceptiveIndicators.push("No significant deceptive patterns detected");
             }
             
-            detailedExplanation.push(findingsList.join('<br>'));
+            // Generate alternative explanations
+            let alternativeExplanations = [];
             
-            // Explain the scoring
-            detailedExplanation.push(`<strong>How I Calculated the ${riskScore}% Risk Score:</strong>`);
-            detailedExplanation.push(`• Found ${significantIndicators} significant indicator${significantIndicators !== 1 ? 's' : ''} across ${wordCount} words`);
-            detailedExplanation.push(`• Base score of ${totalScore.toFixed(1)} points from weighted patterns`);
-            detailedExplanation.push(`• Scaled to ${riskScore}% using progressive risk tiers`);
+            if (deceptionScore <= 3) {
+                alternativeExplanations.push("The communication style appears genuine and direct. Any minor patterns detected are likely part of the writer's natural expression.");
+            } else if (deceptionScore <= 5) {
+                alternativeExplanations.push("The patterns observed could reflect:");
+                alternativeExplanations.push("• Natural hesitation or uncertainty about complex topics");
+                alternativeExplanations.push("• Cultural or personal communication style differences");
+                alternativeExplanations.push("• Attempting to be polite or diplomatic rather than deceptive");
+            } else if (deceptionScore <= 7) {
+                alternativeExplanations.push("While concerning patterns exist, consider that the writer might be:");
+                alternativeExplanations.push("• Anxious or stressed, affecting their communication clarity");
+                alternativeExplanations.push("• Not a native speaker or unfamiliar with formal writing");
+                alternativeExplanations.push("• Genuinely uncertain rather than deliberately deceptive");
+                alternativeExplanations.push("• Using sales/marketing language that sounds manipulative but is standard practice");
+            } else {
+                alternativeExplanations.push("Even with strong indicators present, be aware that:");
+                alternativeExplanations.push("• High-pressure situations can cause defensive communication");
+                alternativeExplanations.push("• Some industries normalize exaggerated language");
+                alternativeExplanations.push("• The writer may be repeating someone else's deceptive information unknowingly");
+            }
             
-            // Context matters section
-            detailedExplanation.push(`<strong>Important Context:</strong>`);
-            detailedExplanation.push(`Remember that these patterns can appear in truthful statements too. Consider:`);
-            detailedExplanation.push(`• The speaker's normal communication style`);
-            detailedExplanation.push(`• The stakes involved in this situation`);
-            detailedExplanation.push(`• Whether the person is naturally anxious or uncertain`);
-            detailedExplanation.push(`• Cultural and individual differences in expression`);
+            // Generate response strategy
+            let responseStrategy = [];
+            
+            if (deceptionScore <= 3) {
+                responseStrategy.push("<strong>Low Risk - Open Collaboration:</strong>");
+                responseStrategy.push("Respond with openness and trust. Engage directly with the content, ask clarifying questions as needed, and proceed with normal communication. No special precautions necessary.");
+            } else if (deceptionScore <= 5) {
+                responseStrategy.push("<strong>Low-Medium Risk - Trust but Verify:</strong>");
+                responseStrategy.push("Maintain a friendly tone while seeking clarification on ambiguous points. Ask specific questions about any vague areas. Example: 'Could you provide more details about [specific claim]?' or 'What exactly do you mean by [vague term]?'");
+            } else if (deceptionScore <= 7) {
+                responseStrategy.push("<strong>Medium-High Risk - Cautious Engagement:</strong>");
+                responseStrategy.push("Slow down the conversation. Request specific evidence or documentation for key claims. Use phrases like: 'That's interesting - could you share the data behind that?' or 'Before we proceed, I'd like to verify a few details.' Avoid making commitments until you've fact-checked independently.");
+            } else {
+                responseStrategy.push("<strong>High Risk - Protective Stance:</strong>");
+                responseStrategy.push("Maintain professional distance. Document all interactions. Respond with: 'I'll need to review this carefully before responding' or 'Please provide verifiable documentation for these claims.' Consider involving legal counsel or other authorities if appropriate. Do not share sensitive information or make any commitments.");
+            }
+            
+            // Additional metadata for analysis
+            const metadata = {
+                wordCount,
+                indicatorCount: significantIndicators,
+                totalScore: totalScore,
+                analysisVersion: "3.0"
+            };
+            
+            // Compile all results for return
             
             return {
-                riskScore,
-                riskLevel,
-                confidence,
-                keyIndicators: keyIndicators.slice(0, 5),
-                linguisticPatterns: linguisticPatterns.slice(0, 4),
-                emotionalIndicators: emotionalIndicators.slice(0, 4),
-                recommendations: recommendations,
-                detailedExplanation: detailedExplanation.join('<br><br>'),
-                metadata: {
-                    wordCount,
-                    indicatorCount: significantIndicators,
-                    totalScore: totalScore,
-                    analysisVersion: "2.0"
-                }
+                deceptionScore,
+                scoreExplanation,
+                deceptiveIndicators,
+                alternativeExplanations: alternativeExplanations.join('<br>'),
+                responseStrategy: responseStrategy.join('<br><br>'),
+                metadata
             };
         }
         
@@ -1295,132 +1160,63 @@
         }
         
         function displayResults(data) {
-            // Animate risk score
-            const riskScore = document.getElementById('riskScore');
-            const riskLevel = document.getElementById('riskLevel');
+            // Animate deception score (1-10)
+            const scoreElement = document.getElementById('riskScore');
+            const levelElement = document.getElementById('riskLevel');
+            const explanationElement = document.getElementById('scoreExplanation');
             
             // Animate score from 0 to actual value
-            animateValue(riskScore, 0, data.riskScore, 1000, '%');
-            riskLevel.textContent = data.riskLevel;
+            animateValue(scoreElement, 0, data.deceptionScore, 1000, '/10');
+            levelElement.textContent = 'Deception Likelihood';
             
-            // Display Analysis Depth with stars
-            const stars = document.querySelectorAll('.star');
-            const depthText = document.getElementById('depthText');
-            let starCount = 0;
-            let depthDescription = '';
-            
-            if (data.confidence < 40) {
-                starCount = 1;
-                depthDescription = 'Basic';
-            } else if (data.confidence < 55) {
-                starCount = 2;
-                depthDescription = 'Limited';
-            } else if (data.confidence < 70) {
-                starCount = 3;
-                depthDescription = 'Moderate';
-            } else if (data.confidence < 85) {
-                starCount = 4;
-                depthDescription = 'Thorough';
-            } else {
-                starCount = 5;
-                depthDescription = 'Comprehensive';
-            }
-            
-            // Animate stars
-            stars.forEach((star, index) => {
-                setTimeout(() => {
-                    if (index < starCount) {
-                        star.textContent = '★';
-                        star.classList.add('filled');
-                    } else {
-                        star.textContent = '☆';
-                        star.classList.remove('filled');
-                    }
-                }, (index + 1) * 200);
-            });
-            
+            // Display score explanation
             setTimeout(() => {
-                depthText.textContent = depthDescription;
-            }, starCount * 200);
+                explanationElement.innerHTML = data.scoreExplanation;
+                explanationElement.style.animation = 'fadeIn 0.5s';
+            }, 500);
             
-            // Apply risk color
-            riskScore.className = 'risk-score';
-            if (data.riskScore < 30) {
-                riskScore.classList.add('risk-low');
-            } else if (data.riskScore < 50) {
-                riskScore.classList.add('risk-moderate');
-            } else if (data.riskScore < 70) {
-                riskScore.classList.add('risk-elevated');
+            // Apply color based on deception score
+            scoreElement.className = 'risk-score';
+            if (data.deceptionScore <= 3) {
+                scoreElement.classList.add('risk-low');
+            } else if (data.deceptionScore <= 5) {
+                scoreElement.classList.add('risk-moderate');
+            } else if (data.deceptionScore <= 7) {
+                scoreElement.classList.add('risk-elevated');
             } else {
-                riskScore.classList.add('risk-high');
+                scoreElement.classList.add('risk-high');
             }
             
-            // Display key indicators with animation
-            const keyIndicatorsList = document.getElementById('keyIndicators');
-            keyIndicatorsList.innerHTML = '';
-            data.keyIndicators.forEach((indicator, index) => {
+            // Display deceptive indicators
+            const indicatorsList = document.getElementById('deceptiveIndicators');
+            indicatorsList.innerHTML = '';
+            if (data.deceptiveIndicators && data.deceptiveIndicators.length > 0) {
+                data.deceptiveIndicators.forEach((indicator, index) => {
+                    setTimeout(() => {
+                        const li = document.createElement('li');
+                        li.innerHTML = indicator;  // Use innerHTML for formatting
+                        li.style.animation = 'fadeIn 0.5s';
+                        indicatorsList.appendChild(li);
+                    }, 700 + (index * 100));
+                });
+            }
+            
+            // Display alternative explanations
+            const altExplanations = document.getElementById('alternativeExplanations');
+            if (altExplanations && data.alternativeExplanations) {
                 setTimeout(() => {
-                    const li = document.createElement('li');
-                    li.textContent = indicator;
-                    li.style.animation = 'fadeIn 0.5s';
-                    keyIndicatorsList.appendChild(li);
-                }, index * 100);
-            });
-            
-            // Display linguistic patterns
-            const linguisticPatternsList = document.getElementById('linguisticPatterns');
-            linguisticPatternsList.innerHTML = '';
-            if (data.linguisticPatterns && data.linguisticPatterns.length > 0) {
-                data.linguisticPatterns.forEach((pattern, index) => {
-                    setTimeout(() => {
-                        const li = document.createElement('li');
-                        li.textContent = pattern;
-                        li.style.animation = 'fadeIn 0.5s';
-                        linguisticPatternsList.appendChild(li);
-                    }, 1200 + (index * 100));
-                });
+                    altExplanations.innerHTML = data.alternativeExplanations;
+                    altExplanations.style.animation = 'fadeIn 0.6s';
+                }, 1200);
             }
             
-            // Display emotional indicators
-            const emotionalIndicatorsList = document.getElementById('emotionalIndicators');
-            emotionalIndicatorsList.innerHTML = '';
-            if (data.emotionalIndicators && data.emotionalIndicators.length > 0) {
-                data.emotionalIndicators.forEach((indicator, index) => {
-                    setTimeout(() => {
-                        const li = document.createElement('li');
-                        li.textContent = indicator;
-                        li.style.animation = 'fadeIn 0.5s';
-                        emotionalIndicatorsList.appendChild(li);
-                    }, 1400 + (index * 100));
-                });
-            }
-            
-            // Display recommendations
-            const recommendationsList = document.getElementById('recommendations');
-            recommendationsList.innerHTML = '';
-            if (data.recommendations && data.recommendations.length > 0) {
-                const ul = document.createElement('ul');
-                ul.className = 'indicator-list';
-                data.recommendations.forEach((rec, index) => {
-                    setTimeout(() => {
-                        const li = document.createElement('li');
-                        li.textContent = rec;
-                        li.style.animation = 'fadeIn 0.5s';
-                        ul.appendChild(li);
-                    }, 1600 + (index * 100));
-                });
-                recommendationsList.appendChild(ul);
-            }
-            
-            // Display detailed explanation
-            const explanationDiv = document.getElementById('detailedExplanation');
-            if (explanationDiv && data.detailedExplanation) {
+            // Display response strategy
+            const responseStrategy = document.getElementById('responseStrategy');
+            if (responseStrategy && data.responseStrategy) {
                 setTimeout(() => {
-                    explanationDiv.innerHTML = data.detailedExplanation;
-                    explanationDiv.style.animation = 'fadeIn 0.8s';
-                }, 2000);
-            } else if (!explanationDiv) {
-                console.error('Detailed explanation div not found');
+                    responseStrategy.innerHTML = data.responseStrategy;
+                    responseStrategy.style.animation = 'fadeIn 0.6s';
+                }, 1500);
             }
             
             showResults();
@@ -1514,7 +1310,7 @@
                 <div class="history-item" onclick="loadFromHistory(${index})">
                     <div class="history-date">${new Date(item.timestamp).toLocaleString()}</div>
                     <div class="history-text">${item.statement}</div>
-                    <div class="history-risk">Risk Score: ${item.riskScore}% - ${item.riskLevel}</div>
+                    <div class="history-risk">Deception Score: ${item.deceptionScore || item.riskScore}/10</div>
                 </div>
             `).join('');
         }
