@@ -920,8 +920,14 @@
                     found: [],
                     threshold: 3
                 },
+                emotional: {
+                    patterns: ['feel', 'felt', 'upset', 'worried', 'anxious', 'nervous', 'scared', 'afraid'],
+                    weight: 0.5,  // Low weight - emotions are normal
+                    found: [],
+                    threshold: 3
+                },
                 memoryIssues: {
-                    patterns: ['forgot', 'can\'t remember', 'don\'t recall', 'memory is fuzzy', 'not sure if'],
+                    patterns: ['forgot', "can't remember", "don't recall", 'memory is fuzzy', 'not sure if'],
                     weight: 4,  // New category - memory issues are suspicious
                     found: [],
                     threshold: 1
