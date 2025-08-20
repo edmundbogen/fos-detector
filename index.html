@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edmund's FOS Detector | AI-Powered Analysis</title>
+    <title>Edmund's FOS Detector | Professional Analysis Suite</title>
     <style>
         * {
             margin: 0;
@@ -13,204 +11,176 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            background-color: #0a1628;
+            color: #ffffff;
+            overflow-x: hidden;
         }
         
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 800px;
-            width: 100%;
-        }
-        
+        /* Header with navigation */
         .header {
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 50px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00a8e8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .brand-text h1 {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+        }
+        
+        .brand-text p {
+            font-size: 11px;
+            color: #00a8e8;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 40px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            color: #00a8e8;
             text-align: center;
             margin-bottom: 40px;
         }
         
-        .logo {
-            font-size: 60px;
-            margin-bottom: 10px;
-        }
-        
-        h1 {
-            color: #333;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 1.1rem;
-        }
-        
-        .input-section {
+        /* Input Section */
+        .input-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 30px;
             margin-bottom: 30px;
         }
         
-        label {
-            display: block;
-            color: #555;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+        .input-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00a8e8;
+            margin-bottom: 15px;
         }
         
         textarea {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-family: inherit;
-            resize: vertical;
             min-height: 150px;
-            transition: border-color 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            border-radius: 4px;
+            resize: vertical;
         }
         
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #00a8e8;
+            background: rgba(255, 255, 255, 0.08);
         }
         
         .char-counter {
             text-align: right;
-            color: #999;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            margin-top: 10px;
         }
         
-        .analyze-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .analyze-button {
+            background: linear-gradient(135deg, #00a8e8 0%, #0076a3 100%);
+            color: #ffffff;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 50px;
+            padding: 15px 50px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 4px;
+            transition: all 0.3s;
             display: block;
             margin: 0 auto;
         }
         
-        .analyze-btn:hover {
+        .analyze-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 168, 232, 0.4);
         }
         
-        .analyze-btn:active {
-            transform: translateY(0);
-        }
-        
-        .analyze-btn:disabled {
-            background: #ccc;
+        .analyze-button:disabled {
+            background: rgba(255, 255, 255, 0.1);
             cursor: not-allowed;
             transform: none;
         }
         
-        .results {
-            margin-top: 40px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            display: none;
-        }
-        
-        .results.show {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .risk-level {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .risk-safe { background: #d4edda; color: #155724; }
-        .risk-low { background: #d1ecf1; color: #0c5460; }
-        .risk-medium { background: #fff3cd; color: #856404; }
-        .risk-high { background: #f8d7da; color: #721c24; }
-        
-        .analysis-section {
-            margin-top: 20px;
-        }
-        
-        .analysis-section h3 {
-            color: #444;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .analysis-content {
-            color: #666;
-            line-height: 1.6;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .indicators {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .indicator {
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .indicator-label {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
-        .indicator-value {
-            color: #333;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .loading {
+        /* Loading State */
+        .loading-container {
             display: none;
             text-align: center;
-            margin-top: 20px;
+            padding: 40px;
         }
         
-        .loading.show {
+        .loading-container.active {
             display: block;
         }
         
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            border-top: 3px solid #00a8e8;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin: 0 auto 20px;
         }
         
         @keyframes spin {
@@ -218,32 +188,155 @@
             100% { transform: rotate(360deg); }
         }
         
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
+        /* Results Section */
+        .results-container {
             display: none;
         }
         
-        .error-message.show {
+        .results-container.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .risk-meter {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .risk-score {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .risk-level {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .risk-low { color: #00ff00; }
+        .risk-moderate { color: #ffff00; }
+        .risk-elevated { color: #ff9900; }
+        .risk-high { color: #ff0000; }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00a8e8, #00ff00);
+            transition: width 1s ease;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 25px;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00a8e8;
+            margin-bottom: 15px;
+        }
+        
+        .card-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .indicator-list {
+            list-style: none;
+        }
+        
+        .indicator-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .indicator-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .pattern-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(0, 168, 232, 0.2);
+            border: 1px solid #00a8e8;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 4px;
+        }
+        
+        .pattern-indicator.active {
+            background: rgba(0, 168, 232, 0.4);
+        }
+        
+        /* Error State */
+        .error-message {
+            display: none;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6666;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .error-message.active {
             display: block;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">🔍</div>
-            <h1>Edmund's FOS Detector</h1>
-            <p class="subtitle">Advanced Pattern Recognition & Behavioral Analysis</p>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">🔍</div>
+                <div class="brand-text">
+                    <h1>EDMUND'S FOS DETECTOR</h1>
+                    <p>Professional Deception Analysis Suite</p>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="main-content">
+        <h2 class="section-title">AI-Powered Statement Analysis</h2>
+        <p class="section-subtitle">Advanced Pattern Recognition & Behavioral Analysis</p>
         
-        <div class="input-section">
-            <label for="statement">Enter Statement for Analysis:</label>
+        <div class="input-container">
+            <div class="input-label">Enter Statement for Analysis</div>
             <textarea 
-                id="statement" 
+                id="statementInput" 
                 placeholder="Type or paste the statement you want to analyze..."
                 maxlength="5000"
             ></textarea>
@@ -252,237 +345,199 @@
             </div>
         </div>
         
-        <button class="analyze-btn" onclick="analyzeStatement()">
+        <button class="analyze-button" id="analyzeBtn" onclick="analyzeStatement()">
             Analyze Statement
         </button>
         
-        <div class="loading" id="loading">
+        <div class="loading-container" id="loadingContainer">
             <div class="spinner"></div>
-            <p style="margin-top: 15px; color: #666;">Analyzing statement...</p>
+            <p>Performing advanced AI analysis...</p>
         </div>
         
-        <div class="error-message" id="error">
-            <strong>Error:</strong> <span id="errorText"></span>
-        </div>
+        <div class="error-message" id="errorMessage"></div>
         
-        <div class="results" id="results">
-            <div class="risk-level" id="riskLevel"></div>
-            
-            <div class="indicators" id="indicators"></div>
-            
-            <div class="analysis-section">
-                <h3>Detailed Analysis</h3>
-                <div class="analysis-content" id="analysis"></div>
+        <div class="results-container" id="resultsContainer">
+            <div class="risk-meter">
+                <div class="risk-score" id="riskScore">0%</div>
+                <div class="risk-level" id="riskLevel">Analyzing...</div>
+                <div>Confidence Level: <span id="confidenceLevel">0%</span></div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                </div>
             </div>
             
-            <div class="analysis-section">
-                <h3>Key Indicators</h3>
-                <div class="analysis-content" id="keyIndicators"></div>
-            </div>
-            
-            <div class="analysis-section">
-                <h3>Recommendations</h3>
-                <div class="analysis-content" id="recommendations"></div>
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <div class="card-title">Key Indicators</div>
+                    <div class="card-content">
+                        <ul class="indicator-list" id="keyIndicators"></ul>
+                    </div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="card-title">Linguistic Patterns</div>
+                    <div class="card-content" id="linguisticPatterns">
+                        <span class="pattern-indicator" id="hedging">Hedging</span>
+                        <span class="pattern-indicator" id="distancing">Distancing</span>
+                        <span class="pattern-indicator" id="vagueness">Vagueness</span>
+                        <span class="pattern-indicator" id="overQualifying">Over-Qualifying</span>
+                    </div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="card-title">Detailed Analysis</div>
+                    <div class="card-content" id="detailedAnalysis"></div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="card-title">Recommendations</div>
+                    <div class="card-content" id="recommendations"></div>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Character counter
-        const textarea = document.getElementById('statement');
+        const textarea = document.getElementById('statementInput');
         const charCount = document.getElementById('charCount');
         
         textarea.addEventListener('input', function() {
             charCount.textContent = this.value.length;
         });
         
-        // Analysis function
-        function analyzeStatement() {
-            const statement = document.getElementById('statement').value.trim();
+        // API configuration - Will be replaced with your Vercel URL after deployment
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api/analyze'
+            : '/api/analyze';
+        
+        async function analyzeStatement() {
+            const statement = document.getElementById('statementInput').value.trim();
             
             if (!statement) {
                 showError('Please enter a statement to analyze.');
                 return;
             }
             
-            // Hide previous results and errors
-            document.getElementById('results').classList.remove('show');
-            document.getElementById('error').classList.remove('show');
+            // Reset UI
+            hideError();
+            hideResults();
+            showLoading();
+            disableButton();
             
-            // Show loading
-            document.getElementById('loading').classList.add('show');
-            
-            // Disable button
-            document.querySelector('.analyze-btn').disabled = true;
-            
-            // Simulate analysis (since we can't use OpenAI API directly from client-side)
-            setTimeout(() => {
-                performAnalysis(statement);
-            }, 2000);
-        }
-        
-        function performAnalysis(statement) {
-            // Hide loading
-            document.getElementById('loading').classList.remove('show');
-            
-            // Re-enable button
-            document.querySelector('.analyze-btn').disabled = false;
-            
-            // Pattern-based analysis (simplified version)
-            const analysis = analyzePatterns(statement);
-            
-            // Display results
-            displayResults(analysis);
-        }
-        
-        function analyzePatterns(statement) {
-            const lowercaseStatement = statement.toLowerCase();
-            const wordCount = statement.split(/\s+/).length;
-            const sentenceCount = statement.split(/[.!?]+/).filter(s => s.trim()).length;
-            
-            // Deception indicators (simplified pattern matching)
-            const hedgingWords = ['maybe', 'perhaps', 'possibly', 'might', 'could', 'probably', 'somewhat', 'sort of', 'kind of'];
-            const distancingWords = ['that', 'those', 'their', 'they'];
-            const vagueWords = ['stuff', 'things', 'something', 'whatever', 'basically'];
-            const qualifiers = ['honestly', 'frankly', 'to be honest', 'actually', 'really', 'truly'];
-            
-            let riskScore = 0;
-            let indicators = [];
-            
-            // Check for hedging language
-            const hedgingCount = hedgingWords.filter(word => lowercaseStatement.includes(word)).length;
-            if (hedgingCount > 2) {
-                riskScore += 20;
-                indicators.push('Excessive hedging language detected');
-            }
-            
-            // Check for distancing language
-            const distancingCount = distancingWords.filter(word => 
-                new RegExp(`\\b${word}\\b`, 'gi').test(statement)
-            ).length;
-            if (distancingCount > wordCount * 0.1) {
-                riskScore += 15;
-                indicators.push('Distancing language patterns found');
-            }
-            
-            // Check for vague terminology
-            const vagueCount = vagueWords.filter(word => lowercaseStatement.includes(word)).length;
-            if (vagueCount > 1) {
-                riskScore += 15;
-                indicators.push('Vague terminology detected');
-            }
-            
-            // Check for unnecessary qualifiers
-            const qualifierCount = qualifiers.filter(word => lowercaseStatement.includes(word)).length;
-            if (qualifierCount > 1) {
-                riskScore += 20;
-                indicators.push('Overuse of truth qualifiers');
-            }
-            
-            // Check for overly complex sentences
-            const avgWordsPerSentence = wordCount / sentenceCount;
-            if (avgWordsPerSentence > 25) {
-                riskScore += 10;
-                indicators.push('Overly complex sentence structure');
-            }
-            
-            // Check for lack of detail
-            if (wordCount < 30 && sentenceCount < 3) {
-                riskScore += 15;
-                indicators.push('Lack of specific details');
-            }
-            
-            // Determine risk level
-            let riskLevel, riskClass;
-            if (riskScore < 20) {
-                riskLevel = 'LOW RISK - Statement appears genuine';
-                riskClass = 'risk-safe';
-            } else if (riskScore < 40) {
-                riskLevel = 'MODERATE RISK - Some deception indicators present';
-                riskClass = 'risk-low';
-            } else if (riskScore < 60) {
-                riskLevel = 'ELEVATED RISK - Multiple deception patterns detected';
-                riskClass = 'risk-medium';
-            } else {
-                riskLevel = 'HIGH RISK - Significant deception indicators found';
-                riskClass = 'risk-high';
-            }
-            
-            return {
-                riskLevel,
-                riskClass,
-                riskScore,
-                indicators,
-                metrics: {
-                    'Word Count': wordCount,
-                    'Sentence Count': sentenceCount,
-                    'Avg Words/Sentence': avgWordsPerSentence.toFixed(1),
-                    'Risk Score': riskScore + '%'
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ statement })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Analysis failed. Please try again.');
                 }
-            };
+                
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                showError(error.message || 'An error occurred during analysis. Please try again.');
+            } finally {
+                hideLoading();
+                enableButton();
+            }
         }
         
-        function displayResults(analysis) {
-            // Set risk level
-            const riskLevelDiv = document.getElementById('riskLevel');
-            riskLevelDiv.textContent = analysis.riskLevel;
-            riskLevelDiv.className = 'risk-level ' + analysis.riskClass;
+        function displayResults(data) {
+            // Set risk score and level
+            const riskScore = document.getElementById('riskScore');
+            const riskLevel = document.getElementById('riskLevel');
+            const confidenceLevel = document.getElementById('confidenceLevel');
+            const confidenceFill = document.getElementById('confidenceFill');
             
-            // Display metrics
-            const indicatorsDiv = document.getElementById('indicators');
-            indicatorsDiv.innerHTML = '';
-            for (const [label, value] of Object.entries(analysis.metrics)) {
-                indicatorsDiv.innerHTML += `
-                    <div class="indicator">
-                        <div class="indicator-label">${label}</div>
-                        <div class="indicator-value">${value}</div>
-                    </div>
-                `;
+            riskScore.textContent = data.riskScore + '%';
+            riskLevel.textContent = data.riskLevel;
+            confidenceLevel.textContent = data.confidence + '%';
+            confidenceFill.style.width = data.confidence + '%';
+            
+            // Apply risk color
+            riskScore.className = 'risk-score';
+            if (data.riskScore < 30) {
+                riskScore.classList.add('risk-low');
+            } else if (data.riskScore < 50) {
+                riskScore.classList.add('risk-moderate');
+            } else if (data.riskScore < 70) {
+                riskScore.classList.add('risk-elevated');
+            } else {
+                riskScore.classList.add('risk-high');
             }
-            
-            // Display analysis
-            document.getElementById('analysis').innerHTML = `
-                This analysis uses pattern recognition to identify potential deception indicators.
-                The system evaluated the statement for linguistic patterns commonly associated with
-                deceptive communication, including hedging language, distancing phrases, and 
-                structural anomalies.
-            `;
             
             // Display key indicators
-            if (analysis.indicators.length > 0) {
-                document.getElementById('keyIndicators').innerHTML = 
-                    '<ul>' + analysis.indicators.map(i => `<li>${i}</li>`).join('') + '</ul>';
-            } else {
-                document.getElementById('keyIndicators').innerHTML = 
-                    'No significant deception indicators detected in this statement.';
+            const keyIndicatorsList = document.getElementById('keyIndicators');
+            keyIndicatorsList.innerHTML = '';
+            data.keyIndicators.forEach(indicator => {
+                const li = document.createElement('li');
+                li.textContent = indicator;
+                keyIndicatorsList.appendChild(li);
+            });
+            
+            // Display linguistic patterns
+            if (data.linguisticPatterns) {
+                Object.keys(data.linguisticPatterns).forEach(pattern => {
+                    const element = document.getElementById(pattern);
+                    if (element) {
+                        if (data.linguisticPatterns[pattern]) {
+                            element.classList.add('active');
+                        } else {
+                            element.classList.remove('active');
+                        }
+                    }
+                });
             }
             
-            // Display recommendations
-            let recommendations = '';
-            if (analysis.riskScore < 20) {
-                recommendations = 'The statement appears genuine based on linguistic analysis. No immediate concerns identified.';
-            } else if (analysis.riskScore < 40) {
-                recommendations = 'Consider asking follow-up questions for clarification. Pay attention to consistency in responses.';
-            } else if (analysis.riskScore < 60) {
-                recommendations = 'Recommend verification of key claims. Look for supporting evidence or documentation.';
-            } else {
-                recommendations = 'High caution advised. Seek independent verification of all claims before proceeding.';
-            }
-            document.getElementById('recommendations').innerHTML = recommendations;
+            // Display analysis and recommendations
+            document.getElementById('detailedAnalysis').textContent = data.analysis;
+            document.getElementById('recommendations').textContent = data.recommendations;
             
-            // Show results
-            document.getElementById('results').classList.add('show');
-            
-            // Scroll to results
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            showResults();
+        }
+        
+        function showLoading() {
+            document.getElementById('loadingContainer').classList.add('active');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingContainer').classList.remove('active');
+        }
+        
+        function showResults() {
+            document.getElementById('resultsContainer').classList.add('active');
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function hideResults() {
+            document.getElementById('resultsContainer').classList.remove('active');
         }
         
         function showError(message) {
-            document.getElementById('errorText').textContent = message;
-            document.getElementById('error').classList.add('show');
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.classList.add('active');
         }
         
-        // Allow Enter key to submit (Ctrl+Enter or Cmd+Enter)
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('active');
+        }
+        
+        function disableButton() {
+            document.getElementById('analyzeBtn').disabled = true;
+        }
+        
+        function enableButton() {
+            document.getElementById('analyzeBtn').disabled = false;
+        }
+        
+        // Allow Ctrl+Enter or Cmd+Enter to submit
         textarea.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 analyzeStatement();

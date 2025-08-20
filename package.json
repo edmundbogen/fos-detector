@@ -1,0 +1,15 @@
+{
+  "name": "fos-detector",
+  "version": "1.0.0",
+  "description": "Edmund's FOS Detector - AI-Powered Deception Analysis",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "openai": "^4.28.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}
