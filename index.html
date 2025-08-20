@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Edmund's FOS Detector | Professional Analysis Suite</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edmund's FOS Detector | AI-Powered Analysis</title>
     <style>
         * {
             margin: 0;
@@ -11,609 +13,480 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background-color: #0a1628;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-        
-        /* Header with navigation */
-        .header {
-            background: rgba(10, 22, 40, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px 50px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .header-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #00a8e8;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 24px;
-        }
-        
-        .brand-text h1 {
-            font-size: 18px;
-            font-weight: 300;
-            letter-spacing: 1.5px;
-            margin-bottom: 2px;
-        }
-        
-        .brand-text p {
-            font-size: 11px;
-            color: #00a8e8;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        
-        .nav-menu {
-            display: flex;
-            gap: 30px;
             align-items: center;
+            padding: 20px;
         }
         
-        .nav-link {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s;
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
         }
         
-        .nav-link:hover {
-            color: #00a8e8;
-        }
-        
-        .menu-button {
-            background: transparent;
-            border: 2px solid #00a8e8;
-            color: #00a8e8;
-            padding: 10px 20px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-        }
-        
-        .menu-button:hover {
-            background: #00a8e8;
-            color: #0a1628;
-        }
-        
-        /* Hero Section */
-        .hero {
-            margin-top: 100px;
-            min-height: calc(100vh - 100px);
-            display: flex;
-            align-items: center;
-            position: relative;
-            background: linear-gradient(135deg, #0a1628 0%, #1a2942 100%);
-        }
-        
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0.1;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=');
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 80px;
-            display: flex;
-            gap: 60px;
-            align-items: center;
-        }
-        
-        .hero-left {
-            flex: 1;
-        }
-        
-        .accent-line {
-            width: 60px;
-            height: 4px;
-            background: #00a8e8;
-            margin-bottom: 30px;
-        }
-        
-        .hero-title {
-            font-size: 32px;
-            font-weight: 300;
-            line-height: 1.4;
-            margin-bottom: 20px;
-        }
-        
-        .hero-title strong {
-            font-weight: 600;
-            color: #00a8e8;
-        }
-        
-        .hero-description {
-            font-size: 16px;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.8);
+        .header {
+            text-align: center;
             margin-bottom: 40px;
         }
         
-        .cta-button {
-            background: #00a8e8;
-            color: #0a1628;
-            border: none;
-            padding: 15px 40px;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+        .logo {
+            font-size: 60px;
+            margin-bottom: 10px;
         }
         
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 168, 232, 0.3);
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
         
-        .hero-right {
-            flex: 1;
-        }
-        
-        .analysis-preview {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 40px;
-            position: relative;
-        }
-        
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .preview-title {
-            font-size: 20px;
-            font-weight: 400;
-        }
-        
-        .preview-badge {
-            background: rgba(0, 168, 232, 0.2);
-            color: #00a8e8;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .preview-content {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 4px;
-            padding: 20px;
-            min-height: 200px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .preview-placeholder {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        /* Social Links */
-        .social-links {
-            position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            z-index: 100;
-        }
-        
-        .social-link {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        
-        .social-link:hover {
-            background: #00a8e8;
-            transform: scale(1.1);
-        }
-        
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            writing-mode: vertical-lr;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Analysis Section */
-        .analysis-section {
-            background: #ffffff;
-            color: #0a1628;
-            padding: 80px 50px;
-            display: none;
-        }
-        
-        .analysis-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .section-title {
-            font-size: 32px;
-            font-weight: 300;
-            margin-bottom: 20px;
-        }
-        
-        .section-subtitle {
-            font-size: 16px;
+        .subtitle {
             color: #666;
+            font-size: 1.1rem;
         }
         
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-        
-        .analysis-panel {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-        
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .input-section {
             margin-bottom: 30px;
         }
         
-        .panel-icon {
-            width: 50px;
-            height: 50px;
-            background: #00a8e8;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        .panel-title {
-            font-size: 20px;
-            font-weight: 400;
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
         }
         
         textarea {
             width: 100%;
-            min-height: 250px;
             padding: 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
             font-family: inherit;
             resize: vertical;
+            min-height: 150px;
             transition: border-color 0.3s;
         }
         
         textarea:focus {
             outline: none;
-            border-color: #00a8e8;
+            border-color: #667eea;
         }
         
-        .analyze-button {
-            background: #0a1628;
+        .char-counter {
+            text-align: right;
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 18px 40px;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            margin: 0 auto;
         }
         
-        .analyze-button:hover {
-            background: #00a8e8;
+        .analyze-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 168, 232, 0.3);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
         
-        .results-area {
-            background: white;
-            border-radius: 4px;
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+        
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            margin-top: 40px;
             padding: 30px;
-            min-height: 400px;
-            border: 2px solid #e0e0e0;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
         }
         
-        .results-placeholder {
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .risk-level {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            padding: 100px 20px;
-            color: #999;
         }
         
-        .results-content {
-            white-space: pre-wrap;
-            line-height: 1.8;
-            font-family: 'Monaco', 'Courier New', monospace;
+        .risk-safe { background: #d4edda; color: #155724; }
+        .risk-low { background: #d1ecf1; color: #0c5460; }
+        .risk-medium { background: #fff3cd; color: #856404; }
+        .risk-high { background: #f8d7da; color: #721c24; }
+        
+        .analysis-section {
+            margin-top: 20px;
         }
         
-        /* Mobile menu */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-            
-            .hero-content {
-                flex-direction: column;
-            }
-            
-            .analysis-grid {
-                grid-template-columns: 1fr;
-            }
+        .analysis-section h3 {
+            color: #444;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .analysis-content {
+            color: #666;
+            line-height: 1.6;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .indicator {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .indicator-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .indicator-value {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo-section">
-                <div class="logo">EB</div>
-                <div class="brand-text">
-                    <h1>THE EDMUND BOGEN SUITE</h1>
-                    <p>AI-Powered Deception Analysis</p>
-                </div>
-            </div>
-            <nav class="nav-menu">
-                <a href="#" class="nav-link">Home</a>
-                <a href="#" class="nav-link">About</a>
-                <a href="#" class="nav-link">Services</a>
-                <a href="#" class="nav-link">Contact</a>
-                <button class="menu-button" onclick="scrollToAnalysis()">ANALYZE</button>
-            </nav>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🔍</div>
+            <h1>Edmund's FOS Detector</h1>
+            <p class="subtitle">Advanced Pattern Recognition & Behavioral Analysis</p>
         </div>
-    </header>
-    
-    <!-- Social Links -->
-    <div class="social-links">
-        <a href="#" class="social-link">f</a>
-        <a href="#" class="social-link">@</a>
-        <a href="#" class="social-link">in</a>
-        <a href="#" class="social-link">▶</a>
+        
+        <div class="input-section">
+            <label for="statement">Enter Statement for Analysis:</label>
+            <textarea 
+                id="statement" 
+                placeholder="Type or paste the statement you want to analyze..."
+                maxlength="5000"
+            ></textarea>
+            <div class="char-counter">
+                <span id="charCount">0</span> / 5000 characters
+            </div>
+        </div>
+        
+        <button class="analyze-btn" onclick="analyzeStatement()">
+            Analyze Statement
+        </button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #666;">Analyzing statement...</p>
+        </div>
+        
+        <div class="error-message" id="error">
+            <strong>Error:</strong> <span id="errorText"></span>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="risk-level" id="riskLevel"></div>
+            
+            <div class="indicators" id="indicators"></div>
+            
+            <div class="analysis-section">
+                <h3>Detailed Analysis</h3>
+                <div class="analysis-content" id="analysis"></div>
+            </div>
+            
+            <div class="analysis-section">
+                <h3>Key Indicators</h3>
+                <div class="analysis-content" id="keyIndicators"></div>
+            </div>
+            
+            <div class="analysis-section">
+                <h3>Recommendations</h3>
+                <div class="analysis-content" id="recommendations"></div>
+            </div>
+        </div>
     </div>
     
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-background"></div>
-        <div class="hero-content">
-            <div class="hero-left">
-                <div class="accent-line"></div>
-                <h2 class="hero-title">
-                    The <strong>"FOS Detector"</strong> has a proven
-                    track record of identifying deception in 
-                    communications across multiple industries.
-                    From financial fraud to contract disputes,
-                    we can help you uncover the truth in any
-                    document!
-                </h2>
-                <p class="hero-description">
-                    Our advanced AI-powered analysis examines linguistic patterns,
-                    psychological indicators, and contextual red flags to provide
-                    comprehensive deception detection.
-                </p>
-                <button class="cta-button" onclick="scrollToAnalysis()">
-                    START ANALYSIS NOW →
-                </button>
-            </div>
-            <div class="hero-right">
-                <div class="analysis-preview">
-                    <div class="preview-header">
-                        <h3 class="preview-title">Live Analysis Preview</h3>
-                        <span class="preview-badge">REAL-TIME</span>
-                    </div>
-                    <div class="preview-content">
-                        <div class="preview-placeholder">
-                            ▌ Linguistic pattern analysis...
-                            <br>▌ Deception indicators scanning...
-                            <br>▌ Psychological markers detection...
-                            <br>▌ Context verification processing...
-                            <br><br>
-                            <span style="color: #00a8e8;">Ready to analyze your content</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">SCROLL DOWN</div>
-    </section>
-    
-    <!-- Analysis Section -->
-    <section class="analysis-section" id="analysis-section">
-        <div class="analysis-container">
-            <div class="section-header">
-                <h2 class="section-title">Professional Deception Analysis</h2>
-                <p class="section-subtitle">Upload your content and receive instant AI-powered insights</p>
-            </div>
-            
-            <div class="analysis-grid">
-                <div class="analysis-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon">📄</div>
-                        <h3 class="panel-title">Content Input</h3>
-                    </div>
-                    <button style="float: right; margin-bottom: 15px; padding: 8px 20px; background: #f0f0f0; border: none; border-radius: 4px; cursor: pointer;" onclick="loadSample()">Load Sample</button>
-                    <div style="clear: both;"></div>
-                    <textarea id="content-input" placeholder="Paste the content you want to analyze here (emails, contracts, proposals, communications, etc.)"></textarea>
-                    <button class="analyze-button" onclick="analyzeContent()">ANALYZE CONTENT</button>
-                </div>
-                
-                <div class="analysis-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon">📊</div>
-                        <h3 class="panel-title">Analysis Results</h3>
-                    </div>
-                    <div class="results-area">
-                        <div id="results-placeholder" class="results-placeholder">
-                            <h3 style="font-size: 24px; margin-bottom: 10px; color: #666;">Awaiting Analysis</h3>
-                            <p style="color: #999;">Results will appear here</p>
-                        </div>
-                        <div id="results-content" class="results-content" style="display: none;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
     <script>
-        function scrollToAnalysis() {
-            document.getElementById('analysis-section').style.display = 'block';
-            document.getElementById('analysis-section').scrollIntoView({ behavior: 'smooth' });
-        }
+        // Character counter
+        const textarea = document.getElementById('statement');
+        const charCount = document.getElementById('charCount');
         
-        function loadSample() {
-            const sampleText = `Dear Valued Investor,
-
-I am writing to you with an exclusive opportunity that has just become available. As a senior portfolio manager with over 20 years of experience on Wall Street, I have access to information that the general public simply doesn't have.
-
-Our proprietary algorithm has identified a stock that is guaranteed to triple in value within the next 30 days. This is not speculation - this is based on insider knowledge that I am sharing only with my most trusted clients.
-
-The minimum investment is $10,000, but you must act TODAY. This opportunity will not last, and I can only accept the first 50 investors. Wire the funds immediately to secure your position.
-
-Trust me, you don't want to miss this. I've made millions for my clients using this exact strategy.
-
-Best regards,
-John Smith
-Senior Portfolio Manager`;
-            
-            document.getElementById('content-input').value = sampleText;
-        }
+        textarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
         
-        function analyzeContent() {
-            const content = document.getElementById('content-input').value.trim();
+        // Analysis function
+        function analyzeStatement() {
+            const statement = document.getElementById('statement').value.trim();
             
-            if (!content) {
-                alert('Please enter some content to analyze.');
+            if (!statement) {
+                showError('Please enter a statement to analyze.');
                 return;
             }
             
-            // Hide placeholder, show results
-            document.getElementById('results-placeholder').style.display = 'none';
-            document.getElementById('results-content').style.display = 'block';
+            // Hide previous results and errors
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
             
-            // Simulate processing
-            document.getElementById('results-content').innerHTML = '<span style="color: #00a8e8;">Processing analysis...</span>';
+            // Show loading
+            document.getElementById('loading').classList.add('show');
             
+            // Disable button
+            document.querySelector('.analyze-btn').disabled = true;
+            
+            // Simulate analysis (since we can't use OpenAI API directly from client-side)
             setTimeout(() => {
-                const results = `🚨 DECEPTION ANALYSIS COMPLETE 🚨
-
-Overall Deception Score: 87/100 (HIGH RISK)
-
-Key Indicators Found:
-✓ Urgency tactics: "must act TODAY", "will not last"
-✓ Unverifiable claims: "guaranteed to triple", "proprietary algorithm"
-✓ Authority manipulation: "20 years experience", "senior portfolio manager"
-✓ Scarcity tactics: "only 50 investors", "exclusive opportunity"
-✓ Trust exploitation: "Trust me", "most trusted clients"
-✓ Pressure tactics: "Wire funds immediately"
-
-Red Flags:
-• No specific company or stock ticker mentioned
-• Requests immediate wire transfer
-• Claims of "insider knowledge"
-• Unrealistic returns promised
-• No risk disclosures
-
-Recommendation: EXTREMELY HIGH RISK - Likely investment scam
-Action: Do not invest. Report to authorities.`;
-                
-                document.getElementById('results-content').textContent = results;
-            }, 1500);
+                performAnalysis(statement);
+            }, 2000);
         }
         
-        // Add smooth scroll behavior
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate hero content on load
-            setTimeout(() => {
-                document.querySelector('.hero-left').style.opacity = '0';
-                document.querySelector('.hero-left').style.transform = 'translateX(-50px)';
-                document.querySelector('.hero-right').style.opacity = '0';
-                document.querySelector('.hero-right').style.transform = 'translateX(50px)';
-                
-                setTimeout(() => {
-                    document.querySelector('.hero-left').style.transition = 'all 1s ease';
-                    document.querySelector('.hero-left').style.opacity = '1';
-                    document.querySelector('.hero-left').style.transform = 'translateX(0)';
-                    
-                    setTimeout(() => {
-                        document.querySelector('.hero-right').style.transition = 'all 1s ease';
-                        document.querySelector('.hero-right').style.opacity = '1';
-                        document.querySelector('.hero-right').style.transform = 'translateX(0)';
-                    }, 200);
-                }, 100);
-            }, 100);
+        function performAnalysis(statement) {
+            // Hide loading
+            document.getElementById('loading').classList.remove('show');
+            
+            // Re-enable button
+            document.querySelector('.analyze-btn').disabled = false;
+            
+            // Pattern-based analysis (simplified version)
+            const analysis = analyzePatterns(statement);
+            
+            // Display results
+            displayResults(analysis);
+        }
+        
+        function analyzePatterns(statement) {
+            const lowercaseStatement = statement.toLowerCase();
+            const wordCount = statement.split(/\s+/).length;
+            const sentenceCount = statement.split(/[.!?]+/).filter(s => s.trim()).length;
+            
+            // Deception indicators (simplified pattern matching)
+            const hedgingWords = ['maybe', 'perhaps', 'possibly', 'might', 'could', 'probably', 'somewhat', 'sort of', 'kind of'];
+            const distancingWords = ['that', 'those', 'their', 'they'];
+            const vagueWords = ['stuff', 'things', 'something', 'whatever', 'basically'];
+            const qualifiers = ['honestly', 'frankly', 'to be honest', 'actually', 'really', 'truly'];
+            
+            let riskScore = 0;
+            let indicators = [];
+            
+            // Check for hedging language
+            const hedgingCount = hedgingWords.filter(word => lowercaseStatement.includes(word)).length;
+            if (hedgingCount > 2) {
+                riskScore += 20;
+                indicators.push('Excessive hedging language detected');
+            }
+            
+            // Check for distancing language
+            const distancingCount = distancingWords.filter(word => 
+                new RegExp(`\\b${word}\\b`, 'gi').test(statement)
+            ).length;
+            if (distancingCount > wordCount * 0.1) {
+                riskScore += 15;
+                indicators.push('Distancing language patterns found');
+            }
+            
+            // Check for vague terminology
+            const vagueCount = vagueWords.filter(word => lowercaseStatement.includes(word)).length;
+            if (vagueCount > 1) {
+                riskScore += 15;
+                indicators.push('Vague terminology detected');
+            }
+            
+            // Check for unnecessary qualifiers
+            const qualifierCount = qualifiers.filter(word => lowercaseStatement.includes(word)).length;
+            if (qualifierCount > 1) {
+                riskScore += 20;
+                indicators.push('Overuse of truth qualifiers');
+            }
+            
+            // Check for overly complex sentences
+            const avgWordsPerSentence = wordCount / sentenceCount;
+            if (avgWordsPerSentence > 25) {
+                riskScore += 10;
+                indicators.push('Overly complex sentence structure');
+            }
+            
+            // Check for lack of detail
+            if (wordCount < 30 && sentenceCount < 3) {
+                riskScore += 15;
+                indicators.push('Lack of specific details');
+            }
+            
+            // Determine risk level
+            let riskLevel, riskClass;
+            if (riskScore < 20) {
+                riskLevel = 'LOW RISK - Statement appears genuine';
+                riskClass = 'risk-safe';
+            } else if (riskScore < 40) {
+                riskLevel = 'MODERATE RISK - Some deception indicators present';
+                riskClass = 'risk-low';
+            } else if (riskScore < 60) {
+                riskLevel = 'ELEVATED RISK - Multiple deception patterns detected';
+                riskClass = 'risk-medium';
+            } else {
+                riskLevel = 'HIGH RISK - Significant deception indicators found';
+                riskClass = 'risk-high';
+            }
+            
+            return {
+                riskLevel,
+                riskClass,
+                riskScore,
+                indicators,
+                metrics: {
+                    'Word Count': wordCount,
+                    'Sentence Count': sentenceCount,
+                    'Avg Words/Sentence': avgWordsPerSentence.toFixed(1),
+                    'Risk Score': riskScore + '%'
+                }
+            };
+        }
+        
+        function displayResults(analysis) {
+            // Set risk level
+            const riskLevelDiv = document.getElementById('riskLevel');
+            riskLevelDiv.textContent = analysis.riskLevel;
+            riskLevelDiv.className = 'risk-level ' + analysis.riskClass;
+            
+            // Display metrics
+            const indicatorsDiv = document.getElementById('indicators');
+            indicatorsDiv.innerHTML = '';
+            for (const [label, value] of Object.entries(analysis.metrics)) {
+                indicatorsDiv.innerHTML += `
+                    <div class="indicator">
+                        <div class="indicator-label">${label}</div>
+                        <div class="indicator-value">${value}</div>
+                    </div>
+                `;
+            }
+            
+            // Display analysis
+            document.getElementById('analysis').innerHTML = `
+                This analysis uses pattern recognition to identify potential deception indicators.
+                The system evaluated the statement for linguistic patterns commonly associated with
+                deceptive communication, including hedging language, distancing phrases, and 
+                structural anomalies.
+            `;
+            
+            // Display key indicators
+            if (analysis.indicators.length > 0) {
+                document.getElementById('keyIndicators').innerHTML = 
+                    '<ul>' + analysis.indicators.map(i => `<li>${i}</li>`).join('') + '</ul>';
+            } else {
+                document.getElementById('keyIndicators').innerHTML = 
+                    'No significant deception indicators detected in this statement.';
+            }
+            
+            // Display recommendations
+            let recommendations = '';
+            if (analysis.riskScore < 20) {
+                recommendations = 'The statement appears genuine based on linguistic analysis. No immediate concerns identified.';
+            } else if (analysis.riskScore < 40) {
+                recommendations = 'Consider asking follow-up questions for clarification. Pay attention to consistency in responses.';
+            } else if (analysis.riskScore < 60) {
+                recommendations = 'Recommend verification of key claims. Look for supporting evidence or documentation.';
+            } else {
+                recommendations = 'High caution advised. Seek independent verification of all claims before proceeding.';
+            }
+            document.getElementById('recommendations').innerHTML = recommendations;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('error').classList.add('show');
+        }
+        
+        // Allow Enter key to submit (Ctrl+Enter or Cmd+Enter)
+        textarea.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                analyzeStatement();
+            }
         });
     </script>
 </body>
